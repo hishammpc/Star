@@ -1,0 +1,2509 @@
+<!DOCTYPE html>
+
+<html lang="ms">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/>
+<title>Dashboard Pemantauan Projek STAR</title>
+<style>
+:root {
+  --bg: #f3f7fb;
+  --surface: #ffffff;
+  --surface-2: #f7fafc;
+  --surface-3: #eef4f8;
+  --text: #12202f;
+  --muted: #64748b;
+  --border: #dbe5ee;
+  --accent: #087f8c;
+  --accent-2: #16a3a6;
+  --accent-soft: #dff5f4;
+  --blue: #2563eb;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --shadow: 0 12px 36px rgba(29, 56, 78, .10);
+  --shadow-sm: 0 5px 18px rgba(29, 56, 78, .08);
+  --radius: 18px;
+}
+html[data-theme="dark"] {
+  --bg: #071018;
+  --surface: #0d1822;
+  --surface-2: #101e2a;
+  --surface-3: #162532;
+  --text: #e8f0f7;
+  --muted: #9fb0bf;
+  --border: #233746;
+  --accent: #39c5c7;
+  --accent-2: #7ce1d9;
+  --accent-soft: #133b3e;
+  --blue: #6ea8fe;
+  --danger: #ff7777;
+  --warning: #fbbf24;
+  --shadow: 0 14px 42px rgba(0, 0, 0, .28);
+  --shadow-sm: 0 5px 18px rgba(0, 0, 0, .22);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--accent) 13%, transparent) 0, transparent 30rem),
+    radial-gradient(circle at 100% 5%, color-mix(in srgb, var(--blue) 9%, transparent) 0, transparent 28rem),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  outline-offset: 2px;
+}
+body { padding-left: 230px; }
+.sidebar {
+  position: fixed; inset: 0 auto 0 0; z-index: 80; width: 230px; padding: 22px 16px;
+  display: flex; flex-direction: column; gap: 22px;
+  background: color-mix(in srgb, var(--surface) 97%, transparent);
+  border-right: 1px solid var(--border); box-shadow: 8px 0 30px rgba(29, 56, 78, .08);
+  backdrop-filter: blur(16px);
+}
+.sidebar-brand { display: flex; align-items: center; gap: 11px; padding: 4px 6px 16px; border-bottom: 1px solid var(--border); }
+.sidebar-brand-mark {
+  width: 42px; height: 42px; flex: 0 0 auto; border-radius: 13px; display: grid; place-items: center;
+  color: #fff; font-size: 12px; font-weight: 900; letter-spacing: .06em;
+  background: linear-gradient(145deg, var(--accent), #0b5d8f);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.sidebar-brand-text strong { display: block; font-size: 14px; }
+.sidebar-brand-text span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+.sidebar-nav { display: grid; gap: 8px; }
+.sidebar-link {
+  width: 100%; min-height: 46px; padding: 11px 13px; border: 1px solid transparent; border-radius: 12px;
+  display: flex; align-items: center; gap: 11px; background: transparent; color: var(--muted);
+  text-decoration: none; text-align: left; font-weight: 800; transition: .16s ease;
+}
+.sidebar-link:hover { color: var(--accent); background: var(--accent-soft); transform: translateX(2px); }
+.sidebar-link.active { color: #fff; background: linear-gradient(135deg, var(--accent), #0b67a4); box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 22%, transparent); }
+.sidebar-icon { width: 23px; text-align: center; font-size: 18px; line-height: 1; }
+.sidebar-footer { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; }
+.shell { width: min(1500px, calc(100% - 32px)); margin: 0 auto; padding-bottom: 48px; }
+#dashboard, #perjalanan { scroll-margin-top: 24px; }
+.topbar { display: none; }
+.topbar-inner {
+  width: min(1500px, calc(100% - 32px)); margin: 0 auto;
+  min-height: 72px; display: flex; align-items: center; justify-content: flex-end; gap: 18px;
+}
+.brand { display: none; }
+.brand-logo { width: 220px; max-width: min(42vw, 220px); height: auto; display: block; }
+.hero-heading { display: flex; align-items: center; gap: 14px; min-width: 0; flex-wrap: nowrap; }
+.hero-logo { width: 88px; max-width: min(18vw, 88px); height: auto; flex: 0 0 auto; display: block; }
+.hero-heading h1 { margin: 0; max-width: none; }
+.brand-mark {
+  width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center;
+  color: #fff; font-weight: 900; font-size: 13px; letter-spacing: .5px;
+  background: linear-gradient(145deg, var(--accent), #0b5d8f);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.brand-text { min-width: 0; }
+.brand-text strong { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-text span { color: var(--muted); font-size: 12px; }
+.top-actions { display: flex; align-items: center; gap: 10px; }
+.theme-switch { display: flex; padding: 4px; border-radius: 12px; background: var(--surface-3); border: 1px solid var(--border); }
+.theme-btn { border: 0; border-radius: 9px; padding: 8px 10px; background: transparent; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+.theme-btn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+.primary-btn, .secondary-btn, .danger-btn, .ghost-btn {
+  min-height: 40px; border-radius: 11px; border: 1px solid transparent; padding: 9px 14px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 750;
+  transition: transform .15s ease, opacity .15s ease, background .15s ease;
+}
+.primary-btn:hover, .secondary-btn:hover, .danger-btn:hover, .ghost-btn:hover { transform: translateY(-1px); }
+.primary-btn { color: #fff; background: linear-gradient(135deg, var(--accent), #0b67a4); box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 22%, transparent); }
+.secondary-btn { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 28%, var(--border)); }
+.danger-btn { color: #fff; background: var(--danger); }
+.ghost-btn { color: var(--text); background: var(--surface); border-color: var(--border); }
+button:disabled { cursor: not-allowed; opacity: .46; transform: none !important; }
+.hero { padding: 24px 0 24px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 20px; align-items: start; }
+.eyebrow { color: var(--accent); font-weight: 850; font-size: 13px; text-transform: uppercase; letter-spacing: .12em; }
+h1 { margin: 6px 0 8px; max-width: none; font-size: clamp(21px, 2.6vw, 32px); line-height: 1.06; letter-spacing: -.03em; white-space: nowrap; }
+.hero p { margin: 0; color: var(--muted); max-width: 820px; }
+.hero-actions { display: grid; gap: 10px; justify-items: end; align-items: start; }
+.theme-row { display: flex; justify-content: flex-end; width: 100%; }
+.action-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+.theme-switch.compact { padding: 3px; border-radius: 10px; }
+.theme-switch.compact .theme-btn { padding: 6px 9px; font-size: 13px; border-radius: 8px; gap: 5px; }
+.theme-switch.compact .theme-btn span { line-height: 1; }
+.action-row .primary-btn { min-height: 38px; }
+.year-filter { display: grid; gap: 5px; min-width: 170px; }
+.year-filter label { padding-left: 2px; font-size: 11px; font-weight: 850; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+.year-select { width: 100%; min-height: 40px; padding: 9px 38px 9px 12px; border-radius: 11px; background-color: var(--surface); border: 1px solid var(--border); color: var(--text); font-weight: 750; cursor: pointer; }
+.year-select:hover { border-color: var(--accent); }
+.card { background: color-mix(in srgb, var(--surface) 96%, transparent); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.filter-card { padding: 18px; margin-bottom: 18px; }
+.section-label { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; font-weight: 850; color: var(--muted); margin-bottom: 10px; }
+.year-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.year-btn { border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px; background: var(--surface); color: var(--text); font-weight: 750; }
+.year-btn:hover { border-color: var(--accent); color: var(--accent); }
+.year-btn.active { border-color: var(--accent); color: #fff; background: var(--accent); box-shadow: 0 7px 16px color-mix(in srgb, var(--accent) 24%, transparent); }
+.kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+.kpi { padding: 20px; position: relative; overflow: hidden; }
+.kpi::after { content: ""; position: absolute; width: 110px; height: 110px; border-radius: 50%; right: -44px; top: -48px; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.kpi-icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); margin-bottom: 16px; font-size: 20px; }
+.kpi-value { font-size: 32px; line-height: 1; font-weight: 900; letter-spacing: -.03em; }
+.kpi-label { margin-top: 7px; color: var(--muted); font-size: 13px; font-weight: 850; }
+.kpi-note { margin-top: 12px; font-size: 12px; color: var(--muted); }
+.dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(340px, .85fr); gap: 18px; margin-bottom: 18px; }
+.panel { padding: 20px; min-width: 0; }
+.panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+.panel-head h2, .form-title h2, .table-title h2 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
+.panel-head p, .form-title p, .table-title p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.chart-wrap { width: 100%; min-height: 320px; display: grid; align-items: center; }
+.chart-svg { width: 100%; height: 320px; overflow: visible; }
+.chart-grid { stroke: color-mix(in srgb, var(--border) 88%, #9ca3af); stroke-width: 1; stroke-dasharray: 5 5; }
+.chart-axis-label { fill: var(--muted); font-size: 11px; }
+.chart-month-label { fill: var(--muted); font-size: 16px; font-weight: 650; }
+.chart-axis-line { stroke: color-mix(in srgb, var(--text) 40%, var(--border)); stroke-width: 1.2; }
+.chart-line { fill: none; stroke: #1a73e8; stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.chart-area { fill: url(#areaGradient); }
+.chart-value { fill: var(--text); font-size: 17px; font-weight: 800; }
+.chart-point { fill: #1a73e8; stroke: #1a73e8; stroke-width: 1.2; }
+.chart-point:hover { r: 7; }
+.top-list { display: grid; gap: 11px; }
+.top-row { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.rank { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--surface-3); font-size: 12px; font-weight: 850; color: var(--muted); }
+.top-name { min-width: 0; }
+.top-name-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 760; }
+.top-count { min-width: 34px; text-align: right; font-size: 14px; font-weight: 800; color: var(--text); }
+.top-name-line span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.count-pill { min-width: 36px; text-align: center; border-radius: 999px; padding: 5px 8px; background: var(--accent-soft); color: var(--accent); font-weight: 900; font-size: 12px; }
+.empty-state { padding: 36px 18px; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 14px; }
+.workspace-grid { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: start; }
+.form-card { padding: 20px; position: static; }
+.form-title { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+.edit-badge { display: none; color: var(--warning); background: color-mix(in srgb, var(--warning) 13%, transparent); border: 1px solid color-mix(in srgb, var(--warning) 25%, transparent); border-radius: 999px; padding: 5px 9px; font-size: 11px; font-weight: 800; }
+.edit-badge.show { display: inline-flex; }
+.form-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.date-field-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.date-field-row .date-help { grid-column: 1 / -1; margin-top: -2px; }
+.field { display: grid; gap: 7px; }
+.field.full { grid-column: 1 / -1; }
+label { font-size: 12px; font-weight: 800; color: var(--muted); }
+input, textarea, select { width: 100%; color: var(--text); background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px; padding: 11px 12px; }
+input::placeholder, textarea::placeholder { color: color-mix(in srgb, var(--muted) 75%, transparent); }
+textarea { min-height: 86px; resize: vertical; }
+.form-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 17px; }
+.form-actions .danger-btn, .form-actions .ghost-btn { grid-column: span 1; }
+.table-card { padding: 20px; min-width: 0; }
+.table-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+.table-tools { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; justify-content: flex-end; }
+.search { min-width: 250px; }
+.table-wrap { width: 100%; overflow: auto; border: 1px solid var(--border); border-radius: 14px; }
+table { width: 100%; min-width: 1120px; border-collapse: collapse; font-size: 12px; }
+th { position: sticky; top: 0; z-index: 2; background: var(--surface-3); color: var(--muted); text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+th, td { padding: 12px 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tbody tr { background: var(--surface); transition: background .12s ease; }
+tbody tr:hover { background: color-mix(in srgb, var(--accent-soft) 48%, var(--surface)); }
+tbody tr.selected { background: var(--accent-soft); }
+td strong { font-size: 12.5px; }
+.row-btn { border: 1px solid var(--border); background: var(--surface); color: var(--accent); border-radius: 9px; padding: 6px 9px; font-weight: 800; }
+.row-link { border: 0; background: transparent; padding: 0; color: var(--blue); font-weight: 800; text-align: left; cursor: pointer; }
+.row-link:hover { text-decoration: underline; }
+.pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; color: var(--muted); font-size: 12px; }
+.page-controls { display: flex; align-items: center; gap: 8px; }
+.page-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 9px; padding: 7px 10px; }
+.page-size { width: auto; padding: 7px 9px; }
+.footer-note { margin-top: 18px; color: var(--muted); font-size: 12px; text-align: center; }
+.toast { position: fixed; right: 22px; bottom: 22px; z-index: 50; max-width: 360px; background: var(--text); color: var(--bg); border-radius: 13px; padding: 12px 16px; box-shadow: var(--shadow); transform: translateY(28px); opacity: 0; pointer-events: none; transition: .25s ease; font-weight: 750; font-size: 13px; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.icon { width: 17px; height: 17px; display: inline-block; }
+.portal-view[hidden] { display: none !important; }
+.report-view { padding: 24px 0 0; }
+.report-header { padding: 22px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 18px; }
+.report-header h1 { white-space: normal; margin-top: 7px; }
+.report-header p { margin: 7px 0 0; color: var(--muted); }
+.report-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+.report-year-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+.report-year-range .year-filter {
+  display: block;
+  width: 92px;
+  min-width: 92px;
+}
+.report-year-range .year-select {
+  min-height: 38px;
+  padding: 8px 28px 8px 10px;
+  text-align: center;
+  text-align-last: center;
+}
+.report-year-separator {
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+}
+.report-actions #reportExportCsvBtn, .report-actions #reportPrintBtn { width: 158px; }
+.report-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+.report-summary-box { padding: 20px; }
+.report-summary-box span { display: block; color: var(--muted); font-size: 13px; font-weight: 850; }
+.report-summary-box strong { display: block; margin-top: 8px; font-size: 30px; line-height: 1; }
+.report-table-card { padding: 20px; }
+.report-table-title { margin-bottom: 14px; }
+.report-table { min-width: 1880px; }
+.report-table th { white-space: nowrap; }
+.report-table td { vertical-align: middle; }
+.report-table td:nth-child(8) { min-width: 260px; }
+.report-table td:nth-child(10), .report-table td:nth-child(11), .report-table td:nth-child(12) { text-align:center; white-space:nowrap; }
+@media (max-width: 1080px) {
+  body { padding-left: 205px; }
+  .sidebar { width: 205px; }
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-grid, .workspace-grid { grid-template-columns: 1fr; }
+  .report-header { flex-direction: column; }
+  .report-actions { width: 100%; justify-content: flex-start; }
+  .form-card { position: static; }
+}
+@media (max-width: 820px) {
+  body { padding-left: 0; padding-top: 76px; }
+  .sidebar {
+    inset: 0 0 auto 0; width: auto; height: 66px; padding: 8px 10px;
+    flex-direction: row; align-items: center; gap: 8px; border-right: 0; border-bottom: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(29, 56, 78, .08);
+  }
+  .sidebar-brand { padding: 0 10px 0 0; border-bottom: 0; border-right: 1px solid var(--border); }
+  .sidebar-brand-mark { width: 38px; height: 38px; border-radius: 11px; }
+  .sidebar-brand-text, .sidebar-footer { display: none; }
+  .sidebar-nav { flex: 1; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .sidebar-link { min-height: 44px; padding: 8px; justify-content: center; gap: 6px; font-size: 12px; }
+  .sidebar-link:hover { transform: none; }
+  .sidebar-icon { width: auto; font-size: 16px; }
+  #dashboard, #perjalanan { scroll-margin-top: 84px; }
+}
+@media (max-width: 720px) {
+  .shell, .topbar-inner { width: min(100% - 20px, 1500px); }
+  .topbar-inner { min-height: 66px; }
+  .brand-text span { display: none; }
+  .theme-btn span { display: none; }
+  .hero { grid-template-columns: 1fr; padding-top: 25px; }
+  .hero-actions { justify-content: flex-start; align-items: stretch; }
+  .year-filter { min-width: 150px; flex: 1 1 150px; }
+  .hero-actions > button { flex: 1 1 auto; }
+  .kpi-grid { grid-template-columns: 1fr; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .report-summary { grid-template-columns: 1fr; }
+  .report-actions { align-items: stretch; }
+  .report-actions .year-filter, .report-actions button { width: 100%; }
+  .form-grid { grid-template-columns: 1fr; }
+  .date-field-row { grid-template-columns: 1fr; }
+  .field.full { grid-column: auto; }
+  .table-head { align-items: stretch; flex-direction: column; }
+  .table-tools { justify-content: stretch; }
+  .search { min-width: 100%; }
+  .top-actions .primary-btn { display: none; }
+}
+@media print {
+  .sidebar, .topbar, .hero-actions, .form-card, .filter-card, .table-tools, .pagination, .footer-note, .report-actions { display: none !important; }
+  body { background: #fff; color: #111; padding: 0; }
+  .shell { width: 100%; padding: 0; }
+  .card { box-shadow: none; border: 1px solid #ccc; }
+  .dashboard-grid, .workspace-grid { grid-template-columns: 1fr; }
+}
+
+
+/* Dashboard v19: simplified navigation and purpose chart */
+.sidebar { gap: 18px; }
+.sidebar-nav { margin-top: 0; }
+.dashboard-grid { display: block; margin-bottom: 18px; }
+.dashboard-trend { margin-bottom: 18px; }
+.dashboard-insights {
+  display: grid;
+  grid-template-columns: minmax(340px, .82fr) minmax(460px, 1.18fr);
+  gap: 18px;
+  align-items: stretch;
+}
+.dashboard-insights > .panel { height: 100%; }
+.purpose-panel { overflow: hidden; }
+.purpose-chart-container { min-height: 360px; }
+.purpose-chart-layout {
+  display: grid;
+  grid-template-columns: minmax(270px, .9fr) minmax(260px, 1.1fr);
+  gap: 18px;
+  align-items: center;
+}
+.purpose-chart-shell {
+  position: relative;
+  width: min(100%, 330px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+}
+.purpose-chart-shell > * { grid-area: 1 / 1; }
+.purpose-chart-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: absolute;
+  inset: 0;
+}
+.purpose-track { fill: none; stroke: var(--surface-3); stroke-width: 28; }
+.purpose-segment {
+  fill: none;
+  stroke-width: 28;
+  stroke-linecap: round;
+  cursor: pointer;
+  transition: stroke-width .18s ease, opacity .18s ease, filter .18s ease;
+}
+.purpose-segment:hover, .purpose-segment.active {
+  stroke-width: 34;
+  filter: drop-shadow(0 6px 8px rgba(15, 23, 42, .18));
+}
+.purpose-segment.dimmed { opacity: .28; }
+.purpose-center-hole {
+  fill: color-mix(in srgb, var(--surface) 95%, transparent);
+  stroke: var(--border);
+  stroke-width: 1.25;
+  filter: drop-shadow(0 4px 8px rgba(15, 23, 42, .06));
+}
+.purpose-center-value {
+  font-size: 31px;
+  line-height: 1;
+  letter-spacing: -.04em;
+  font-weight: 800;
+  text-anchor: middle;
+  fill: var(--text);
+}
+.purpose-center-label {
+  font-size: 12px;
+  font-weight: 750;
+  text-anchor: middle;
+  fill: var(--muted);
+}
+.purpose-tooltip {
+  position: absolute;
+  z-index: 6;
+  min-width: 175px;
+  max-width: 240px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--text) 94%, transparent);
+  color: var(--bg);
+  box-shadow: var(--shadow);
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, calc(-100% - 12px));
+  transition: opacity .12s ease;
+}
+.purpose-tooltip.show { opacity: 1; }
+.purpose-tooltip strong { display: block; margin-bottom: 3px; font-size: 13px; }
+.purpose-legend {
+  display: grid;
+  gap: 8px;
+  max-height: 330px;
+  overflow: auto;
+  padding-right: 4px;
+}
+.purpose-legend-item {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 11px;
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  background: var(--surface-2);
+  color: var(--text);
+  text-align: left;
+  transition: border-color .15s ease, background .15s ease, transform .15s ease;
+}
+.purpose-legend-item:hover, .purpose-legend-item.active {
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--border));
+  background: var(--accent-soft);
+  transform: translateX(2px);
+}
+.purpose-legend-swatch { width: 11px; height: 11px; border-radius: 50%; }
+.purpose-legend-name { min-width: 0; font-size: 12.5px; font-weight: 780; line-height: 1.25; }
+.purpose-legend-value { text-align: right; white-space: nowrap; }
+.purpose-legend-value strong { display: block; font-size: 13px; }
+.purpose-legend-value span { display: block; margin-top: 1px; color: var(--muted); font-size: 11px; }
+.purpose-empty { min-height: 320px; display: grid; place-items: center; }
+.officer-search-panel { margin-top: 18px; }
+.officer-search-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.officer-search-copy h2 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
+.officer-search-copy p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.officer-search-box { width: min(100%, 430px); }
+.officer-search-box .search { width: 100%; min-width: 0; }
+.officer-search-results { display: grid; gap: 14px; }
+.officer-person-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--surface-2);
+}
+.officer-person-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--accent-soft) 60%, var(--surface));
+  border-bottom: 1px solid var(--border);
+}
+.officer-person-head h3 { margin: 0; font-size: 16px; letter-spacing: -.01em; }
+.officer-trip-list { display: grid; }
+.officer-trip-row {
+  display: grid;
+  grid-template-columns: 38px minmax(150px, 1.15fr) minmax(150px, 1fr) minmax(155px, .9fr) minmax(100px, .55fr);
+  gap: 14px;
+  align-items: start;
+  padding: 14px 16px;
+  background: var(--surface);
+}
+.officer-trip-row + .officer-trip-row { border-top: 1px solid var(--border); }
+.officer-trip-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-3);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+}
+.officer-detail { min-width: 0; }
+.officer-detail-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.officer-detail-value { display: block; color: var(--text); font-size: 13px; font-weight: 720; line-height: 1.4; overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  .officer-search-head { align-items: stretch; flex-direction: column; }
+  .officer-search-box { width: 100%; }
+  .officer-trip-row { grid-template-columns: 34px repeat(2, minmax(0, 1fr)); }
+  .officer-trip-row .officer-detail:nth-child(4),
+  .officer-trip-row .officer-detail:nth-child(5) { grid-column: auto; }
+}
+@media (max-width: 620px) {
+  .officer-trip-row { grid-template-columns: 32px minmax(0, 1fr); gap: 10px; }
+  .officer-trip-row .officer-detail { grid-column: 2; }
+}
+@media (max-width: 1180px) {
+  .dashboard-insights { grid-template-columns: 1fr; }
+  .purpose-chart-layout { grid-template-columns: minmax(250px, .75fr) minmax(280px, 1.25fr); }
+}
+@media (max-width: 720px) {
+  .dashboard-insights { grid-template-columns: 1fr; }
+  .purpose-chart-layout { grid-template-columns: 1fr; }
+  .purpose-chart-container { min-height: 0; }
+  .purpose-chart-shell { width: min(100%, 300px); }
+  .purpose-legend { max-height: none; }
+}
+
+
+
+/* Dashboard v28: shared non-sticky portal heading, sidebar logo and report toolbar */
+.sidebar-brand {
+  min-height: 96px;
+  justify-content: center;
+  padding: 4px 8px 18px;
+}
+.sidebar-logo {
+  display: block;
+  width: 168px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.page-heading {
+  position: static;
+  z-index: 35;
+  min-height: 84px;
+  margin-bottom: 18px;
+  padding: 17px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.page-heading-copy {
+  min-width: 0;
+  transform: translateY(7px);
+}
+.page-heading h1 {
+  margin: 0;
+  white-space: normal;
+  font-size: clamp(20px, 2.25vw, 30px);
+  line-height: 1.15;
+}
+.page-theme-switch {
+  flex: 0 0 auto;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  transform: translateY(7px);
+}
+.page-theme-switch .theme-btn {
+  background: transparent;
+  box-shadow: none;
+}
+.page-theme-switch .theme-btn.active {
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.dashboard-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.dashboard-year-filter { width: min(100%, 190px); }
+.report-header {
+  align-items: center;
+  padding: 16px 20px;
+}
+.report-header > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.report-actions {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.report-actions .year-filter { width: 92px; min-width: 92px; }
+.report-actions #reportExportCsvBtn,
+.report-actions #reportPrintBtn { width: auto; min-width: 150px; }
+
+@media (max-width: 1080px) {
+  .sidebar-logo { width: 146px; }
+  .report-header { align-items: stretch; }
+  .report-actions { justify-content: flex-start; }
+}
+@media (max-width: 820px) {
+  .sidebar-brand {
+    min-height: 0;
+    padding: 0 10px 0 0;
+  }
+  .sidebar-logo { width: 116px; max-height: 45px; }
+  .page-heading { position: static; }
+}
+@media (max-width: 720px) {
+  .page-heading { min-height: 74px; padding: 13px 14px; }
+  .page-heading h1 { font-size: 18px; }
+  .page-theme-switch .theme-btn span { display: none; }
+  .dashboard-toolbar { justify-content: stretch; }
+  .dashboard-year-filter { width: 100%; }
+  .report-header { padding: 14px; }
+  .report-actions {
+    width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 2px;
+  }
+  .report-actions .year-filter,
+  .report-actions button { width: auto !important; flex: 0 0 auto; }
+  .report-actions .year-filter { width: 88px !important; min-width: 88px; }
+}
+@media print {
+  .page-heading { position: static; }
+}
+
+
+/* Dashboard v29: database warga and name autocomplete */
+.user-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.user-summary-box { padding: 20px; }
+.user-summary-box span { display: block; color: var(--muted); font-size: 13px; }
+.user-summary-box strong { display: block; margin-top: 8px; font-size: 30px; line-height: 1; }
+.user-management-grid { display: grid; grid-template-columns: minmax(290px, .72fr) minmax(0, 1.28fr); gap: 18px; align-items: start; }
+.user-form-card { position: sticky; top: 18px; }
+.user-form-card .form-actions { grid-template-columns: 1fr 1fr; }
+.user-list-card { min-width: 0; }
+.user-list-card .table-wrap { overflow-x: hidden; }
+.user-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+.user-table th:first-child,
+.user-table td:first-child {
+  width: 72px;
+  text-align: left;
+}
+.user-table th:last-child,
+.user-table td:last-child {
+  width: 190px;
+  padding-left: 10px;
+  padding-right: 18px;
+  text-align: center;
+}
+.user-row-actions {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 7px;
+}
+.user-action-btn {
+  min-height: 34px; border: 1px solid var(--border); border-radius: 9px; padding: 6px 10px;
+  background: var(--surface); color: var(--accent); font-weight: 800;
+}
+.user-action-btn.delete { color: var(--danger); }
+.user-action-btn:hover { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 42%, var(--border)); }
+.user-action-btn.delete:hover { background: color-mix(in srgb, var(--danger) 10%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 36%, var(--border)); }
+.autocomplete { position: relative; }
+.autocomplete-list {
+  position: absolute; z-index: 70; top: calc(100% + 6px); left: 0; right: 0;
+  max-height: 280px; overflow-y: auto; padding: 6px;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); box-shadow: var(--shadow);
+}
+.autocomplete-list[hidden] { display: none !important; }
+.autocomplete-option {
+  width: 100%; border: 0; border-radius: 9px; padding: 10px 11px;
+  display: block; background: transparent; color: var(--text); text-align: left;
+  font-size: 13px; font-weight: 720;
+}
+.autocomplete-option:hover, .autocomplete-option.active { background: var(--accent-soft); color: var(--accent); }
+.autocomplete-empty { padding: 11px; color: var(--muted); font-size: 12px; }
+.field-help { margin-top: 2px; color: var(--muted); font-size: 11px; }
+@media (max-width: 1080px) {
+  .user-management-grid { grid-template-columns: 1fr; }
+  .user-form-card { position: static; }
+}
+@media (max-width: 820px) {
+  .sidebar-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sidebar-link { font-size: 11px; }
+}
+@media (max-width: 720px) {
+  .user-summary-grid { grid-template-columns: 1fr; }
+  .user-table th:first-child,
+  .user-table td:first-child { width: 54px; }
+  .user-table th:last-child,
+  .user-table td:last-child {
+    width: 152px;
+    padding-left: 6px;
+    padding-right: 8px;
+  }
+  .user-row-actions { gap: 5px; }
+  .user-action-btn {
+    min-height: 32px;
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+}
+
+
+/* Dashboard v32: centered headings and date/day values with padded DD/MM/YYYY dates */
+.record-table thead th:nth-child(n+2),
+.report-table thead th:nth-child(n+2) {
+  text-align: center;
+}
+.record-table tbody td:nth-child(5),
+.record-table tbody td:nth-child(6),
+.record-table tbody td:nth-child(7),
+.report-table tbody td:nth-child(5),
+.report-table tbody td:nth-child(6),
+.report-table tbody td:nth-child(7) {
+  text-align: center;
+  white-space: nowrap;
+}
+
+
+
+/* Dashboard v41: cetakan PDF sama seperti Jadual Laporan Projek STAR (12 kolum) */
+@media print {
+  @page {
+    size: A3 landscape;
+    margin: 8mm;
+  }
+
+  html, body {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .report-view,
+  .report-table-card,
+  .report-table-wrap {
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  .report-view { padding-top: 0 !important; }
+  .report-table-card { padding: 8px !important; }
+  .report-table-wrap { border-radius: 0 !important; border: 1px solid #bbb !important; }
+
+  .report-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+    font-size: 7.2px !important;
+  }
+
+  .report-table thead { display: table-header-group; }
+  .report-table tfoot { display: table-footer-group; }
+  .report-table tr { break-inside: avoid; page-break-inside: avoid; }
+
+  .report-table th,
+  .report-table td {
+    display: table-cell !important;
+    visibility: visible !important;
+    padding: 4px 3px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    line-height: 1.2 !important;
+    vertical-align: top !important;
+  }
+
+  .report-table th:nth-child(1), .report-table td:nth-child(1) { width: 6% !important; }
+  .report-table th:nth-child(2), .report-table td:nth-child(2) { width: 8% !important; }
+  .report-table th:nth-child(3), .report-table td:nth-child(3) { width: 6% !important; }
+  .report-table th:nth-child(4), .report-table td:nth-child(4) { width: 9% !important; }
+  .report-table th:nth-child(5), .report-table td:nth-child(5) { width: 8% !important; }
+  .report-table th:nth-child(6), .report-table td:nth-child(6) { width: 10% !important; }
+  .report-table th:nth-child(7), .report-table td:nth-child(7) { width: 9% !important; }
+  .report-table th:nth-child(8), .report-table td:nth-child(8) { width: 17% !important; }
+  .report-table th:nth-child(9), .report-table td:nth-child(9) { width: 7% !important; }
+  .report-table th:nth-child(10), .report-table td:nth-child(10) { width: 8% !important; }
+  .report-table th:nth-child(11), .report-table td:nth-child(11) { width: 5% !important; }
+  .report-table th:nth-child(12), .report-table td:nth-child(12) { width: 7% !important; }
+}
+
+
+
+/* Dashboard v35: semasa cetak PDF, kotak ringkasan laporan dipaparkan sebaris */
+@media print {
+  .report-summary {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+    margin-bottom: 12px !important;
+  }
+
+  .report-summary-box {
+    padding: 12px 14px !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .report-summary-box span {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+
+  .report-summary-box strong {
+    font-size: 24px !important;
+    margin-top: 6px !important;
+    line-height: 1.05 !important;
+  }
+}
+
+
+/* STAR analytics v2 */
+.kpi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.star-chart-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-bottom:18px; }
+.star-category-panel { min-height:360px; }
+.star-bar-chart { display:grid; gap:11px; }
+.star-bar-row { border:1px solid var(--border); background:var(--surface-2); border-radius:13px; padding:11px 12px; cursor:pointer; transition:transform .16s ease,border-color .16s ease,background .16s ease; }
+.star-bar-row:hover,.star-bar-row.active { transform:translateY(-1px); border-color:color-mix(in srgb,var(--accent) 45%,var(--border)); background:var(--accent-soft); }
+.star-bar-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:7px; }
+.star-bar-label { font-size:12.5px; font-weight:800; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.star-bar-value { font-size:13px; font-weight:900; }
+.star-bar-track { height:9px; border-radius:999px; overflow:hidden; background:var(--surface-3); }
+.star-bar-fill { height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--accent),var(--blue)); transition:width .35s ease; }
+.star-purpose-row { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.star-purpose-row .purpose-chart-layout { grid-template-columns:1fr; gap:12px; }
+.star-purpose-row .purpose-chart-shell { width:min(100%,280px); }
+.star-purpose-row .purpose-legend { max-height:240px; }
+@media(max-width:1100px){.star-chart-grid{grid-template-columns:1fr 1fr}.star-chart-grid .star-category-panel:last-child{grid-column:1/-1}.star-purpose-row{grid-template-columns:1fr}}
+@media(max-width:720px){.star-chart-grid{grid-template-columns:1fr}.star-chart-grid .star-category-panel:last-child{grid-column:auto}.star-purpose-row .purpose-chart-layout{grid-template-columns:1fr}}
+
+/* STAR project data-entry workspace */
+.project-form-card { padding: 22px; }
+.project-form-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.project-span-2 { grid-column: span 2; }
+.project-form-grid textarea { min-height: 76px; }
+.project-form-actions { grid-template-columns: repeat(4,minmax(0,1fr)); }
+.project-table-wrap { max-height: 620px; overflow:auto; }
+.project-record-table { min-width: 1880px; }
+.project-record-table th { white-space: nowrap; }
+.project-record-table td { vertical-align: middle; }
+.project-record-table td:nth-child(8) { min-width: 260px; }
+.project-record-table td:nth-child(10), .project-record-table td:nth-child(11), .project-record-table td:nth-child(12) { text-align:center; white-space:nowrap; }
+.status-chip { display:inline-flex; align-items:center; justify-content:center; border-radius:999px; padding:5px 9px; font-size:11px; font-weight:850; background:var(--surface-3); color:var(--text); border:1px solid var(--border); }
+.status-chip.selesai { background:color-mix(in srgb, #16a34a 12%, var(--surface)); color:#15803d; border-color:color-mix(in srgb, #16a34a 28%, var(--border)); }
+.status-chip.bentang-semua { background:color-mix(in srgb, var(--warning) 12%, var(--surface)); color:var(--warning); border-color:color-mix(in srgb, var(--warning) 30%, var(--border)); }
+.status-chip.tindakan { background:color-mix(in srgb, var(--blue) 10%, var(--surface)); color:var(--blue); border-color:color-mix(in srgb, var(--blue) 25%, var(--border)); }
+@media (max-width:1080px){ .project-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.project-span-2{grid-column:span 2;} }
+@media (max-width:720px){ .project-form-grid{grid-template-columns:1fr;}.project-span-2{grid-column:auto;}.project-form-actions{grid-template-columns:1fr 1fr;} }
+
+
+/* Sticky horizontal scrollbar for project database */
+.project-scrollbar-sticky {
+  position: sticky;
+  top: 8px;
+  z-index: 30;
+  height: 18px;
+  margin: 0 0 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+}
+.project-scrollbar-sticky-inner { height: 1px; min-width: 1880px; }
+.project-scrollbar-sticky::-webkit-scrollbar { height: 12px; }
+.project-scrollbar-sticky::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted) 58%, transparent);
+  border-radius: 999px;
+  border: 2px solid var(--surface);
+}
+.project-scrollbar-sticky::-webkit-scrollbar-track { background: var(--surface-3); border-radius: 999px; }
+@media (max-width: 820px) {
+  .project-scrollbar-sticky { top: 72px; }
+}
+@media print { .project-scrollbar-sticky { display:none !important; } }
+</style>
+</head>
+<body data-dashboard-version="2026-10-07-star-excel-refresh-v2">
+<aside aria-label="Menu utama portal" class="sidebar">
+<div class="sidebar-brand">
+<img alt="Logo MPC" class="sidebar-logo" src="data:image/png;base64,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"/>
+</div>
+
+<nav class="sidebar-nav">
+<button class="sidebar-link active" data-menu="dashboard" id="menuDashboard" type="button"><span aria-hidden="true" class="sidebar-icon">▦</span><span>Dashboard</span></button>
+<button class="sidebar-link" data-menu="perjalanan" id="menuPerjalanan" type="button"><span aria-hidden="true" class="sidebar-icon">🗂</span><span>Projek</span></button>
+<button class="sidebar-link" data-menu="laporan" id="menuLaporan" type="button"><span aria-hidden="true" class="sidebar-icon">▤</span><span>Laporan</span></button>
+</nav>
+<div class="sidebar-footer">Pemantauan kertas projek STAR</div>
+</aside>
+<header aria-hidden="true" class="topbar"></header>
+<main class="shell">
+<section class="page-heading card" aria-label="Tajuk portal">
+<div class="page-heading-copy">
+<h1 id="pageTitle">Dashboard Pemantauan Projek STAR</h1>
+</div>
+<div aria-label="Tukar tema paparan" class="theme-switch compact page-theme-switch">
+<button class="theme-btn active" id="lightTheme" title="Tema cerah" type="button">☀ <span>Cerah</span></button>
+<button class="theme-btn" id="darkTheme" title="Tema gelap" type="button">◐ <span>Gelap</span></button>
+</div>
+</section>
+<div class="portal-view" id="dashboardView">
+<section class="dashboard-toolbar">
+<div class="year-filter dashboard-year-filter">
+<select aria-label="Pilih tahun" class="year-select" id="yearSelect"></select>
+</div>
+</section>
+<section aria-label="Ringkasan utama" class="kpi-grid">
+<article class="card kpi"><div class="kpi-icon">📄</div><div class="kpi-value" id="kpiPeople">0</div><div class="kpi-label">Bilangan Kertas Projek</div></article>
+<article class="card kpi"><div class="kpi-icon">✓</div><div class="kpi-value" id="kpiTrips">0</div><div class="kpi-label">Selesai</div></article>
+<article class="card kpi"><div class="kpi-icon">↻</div><div class="kpi-value" id="kpiDays">0</div><div class="kpi-label">Bentang Semula</div></article>
+<article class="card kpi"><div class="kpi-icon">⏳</div><div class="kpi-value" id="kpiAction">0</div><div class="kpi-label">Tindakan</div></article>
+</section>
+<section class="dashboard-grid">
+<article class="card panel dashboard-trend">
+<div class="panel-head"><div><h2>Trend Bulanan</h2><p>Bilangan kertas projek mengikut bulan</p></div><span class="count-pill" id="chartYearPill">2026</span></div>
+<div class="chart-wrap" id="chartContainer"></div>
+</article>
+
+<section class="star-chart-grid" aria-label="Analisis Projek STAR">
+<article class="card panel star-category-panel"><div class="panel-head"><div><h2>Jenis Mesyuarat</h2><p>Pecahan bilangan kertas mengikut jenis mesyuarat</p></div><span class="count-pill" id="meetingTypePill">0</span></div><div class="star-bar-chart" id="meetingTypeChart"></div></article>
+<article class="card panel star-category-panel"><div class="panel-head"><div><h2>Kluster</h2><p>Pecahan bilangan kertas mengikut kluster</p></div><span class="count-pill" id="clusterPill">0</span></div><div class="star-bar-chart" id="clusterChart"></div></article>
+<article class="card panel star-category-panel"><div class="panel-head"><div><h2>Pembentang</h2><p>Pecahan bilangan kertas mengikut pembentang</p></div><span class="count-pill" id="presenterPill">0</span></div><div class="star-bar-chart" id="presenterChart"></div></article>
+</section>
+<div class="dashboard-insights star-purpose-row">
+<article class="card panel purpose-panel">
+<div class="panel-head">
+<div><h2>Jenis Kertas</h2><p>Pecahan kertas projek mengikut jenis kertas</p></div>
+<span class="count-pill" id="purposeTotalPill">0 rekod</span>
+</div>
+<div aria-live="polite" class="purpose-chart-container" id="purposeChartContainer"></div>
+</article>
+<article class="card panel purpose-panel">
+<div class="panel-head">
+<div><h2>Status Peringatan</h2><p>Pecahan projek berdasarkan kolum Status Peringatan</p></div>
+<span class="count-pill" id="reminderTotalPill">0 rekod</span>
+</div>
+<div aria-live="polite" class="purpose-chart-container" id="reminderChartContainer"></div>
+</article>
+</div>
+<article class="card panel officer-search-panel">
+  <div class="officer-search-head">
+    <div class="officer-search-copy">
+      <h2>Carian Projek</h2>
+      <p>Taip ID Kertas atau Tajuk Kertas untuk melihat butiran projek.</p>
+    </div>
+    <div class="officer-search-box">
+      <input class="search" id="officerSearchInput" placeholder="Cari ID Kertas atau Tajuk Kertas..." type="search" autocomplete="off"/>
+    </div>
+  </div>
+  <div aria-live="polite" class="officer-search-results" id="officerSearchResults">
+    <div class="empty-state">Masukkan ID Kertas atau Tajuk Kertas untuk membuat carian.</div>
+  </div>
+</article>
+</section>
+</div>
+
+<section class="portal-view" hidden="" id="wargaView">
+<section class="user-summary-grid" aria-label="Ringkasan database warga">
+<article class="card user-summary-box"><span>Jumlah nama warga dalam database</span><strong id="wargaCount">0</strong></article>
+</section>
+<section class="user-management-grid">
+<article class="card form-card user-form-card">
+<div class="form-title">
+<div><h2>Maklumat Warga</h2><p>Tambah nama baharu atau pilih nama dalam senarai untuk dikemas kini.</p></div>
+<span class="edit-badge" id="wargaEditBadge">Mod Kemas Kini</span>
+</div>
+<form id="wargaForm" novalidate="">
+<input id="wargaId" type="hidden"/>
+<div class="form-grid">
+<div class="field full"><label for="wargaNama">Nama Warga *</label><input autocomplete="off" id="wargaNama" placeholder="Masukkan nama penuh warga" required=""/></div>
+</div>
+<div class="form-actions">
+<button class="primary-btn" id="wargaAddBtn" type="submit">＋ Tambah</button>
+<button class="secondary-btn" disabled="" id="wargaUpdateBtn" type="button">✎ Kemas Kini</button>
+<button class="danger-btn" disabled="" id="wargaDeleteBtn" type="button">⌫ Padam</button>
+<button class="ghost-btn" id="wargaClearBtn" type="button">↺ Kosongkan</button>
+</div>
+</form>
+</article>
+<article class="card table-card user-list-card">
+<div class="table-head">
+<div class="table-title"><h2>Database Warga</h2><p id="wargaTableSubtitle">Senarai nama warga MPC</p></div>
+<div class="table-tools">
+<input class="search" id="wargaSearchInput" placeholder="Cari nama warga..." type="search" autocomplete="off"/>
+</div>
+</div>
+<div class="table-wrap">
+<table class="user-table">
+<thead><tr><th>Bil.</th><th>Nama Warga</th><th>Tindakan</th></tr></thead>
+<tbody id="wargaTableBody"></tbody>
+</table>
+</div>
+</article>
+</section>
+</section>
+
+<section class="workspace-grid portal-view" hidden="" id="perjalananView">
+<article class="card form-card project-form-card">
+<div class="form-title">
+<div><h2>Key-In Data Projek STAR</h2><p>Masukkan maklumat mengikut struktur kolum database Excel. Medan bertanda * wajib diisi.</p></div>
+<span class="edit-badge" id="editBadge">Mod Kemas Kini</span>
+</div>
+<form id="travelForm" novalidate="">
+<input id="recordId" type="hidden"/>
+<div class="project-form-grid">
+<div class="field"><label for="idKertasInput">ID Kertas *</label><input id="idKertasInput" placeholder="Contoh: KRT-041" required=""/></div>
+<div class="field"><label for="tarikhMesyuaratInput">Tarikh Mesyuarat *</label><input id="tarikhMesyuaratInput" required="" type="date"/></div>
+<div class="field"><label for="bulanInput">Bulan *</label><select id="bulanInput" required=""><option value="">Sila pilih bulan</option><option>JANUARY</option><option>FEBRUARY</option><option>MARCH</option><option>APRIL</option><option>MAY</option><option>JUNE</option><option>JULY</option><option>AUGUST</option><option>SEPTEMBER</option><option>OCTOBER</option><option>NOVEMBER</option><option>DECEMBER</option></select></div>
+<div class="field"><label for="jenisMesyuaratInput">Jenis Mesyuarat *</label><select id="jenisMesyuaratInput" required=""><option value="">Sila pilih</option><option>Mesyuarat Khas</option><option>Mesyuarat Operasi</option><option>Mesyuarat Pengurusan</option></select></div>
+<div class="field"><label for="klusterInput">Kluster *</label><select id="klusterInput" required=""><option value="">Sila pilih</option><option>Sumber Manusia</option><option>Operasi</option><option>Kewangan</option><option>Korporat</option></select></div>
+<div class="field"><label for="pembentangInput">Pembentang *</label><select id="pembentangInput" required=""><option value="">Sila pilih</option><option>Jabatan PSM</option><option>Jabatan Operasi</option><option>Jabatan Kewangan</option><option>Jabatan Korporat</option></select></div>
+<div class="field"><label for="jenisKertasInput">Jenis Kertas *</label><select id="jenisKertasInput" required=""><option value="">Sila pilih</option><option>Kertas Pertimbangan</option><option>Kertas Makluman</option></select></div>
+<div class="field project-span-2"><label for="tajukKertasInput">Tajuk Kertas *</label><textarea id="tajukKertasInput" placeholder="Masukkan tajuk kertas" required=""></textarea></div>
+<div class="field"><label for="statusInput">Status *</label><select id="statusInput" required=""><option value="">Sila pilih</option><option>Selesai</option><option>Tindakan</option><option>Bentang Semula</option></select></div>
+<div class="field"><label for="tarikhBentangInput">Tarikh Jangkaan Bentang Semula</label><input id="tarikhBentangInput" type="date"/></div>
+<div class="field"><label for="bakiHariInput">Baki Hari</label><input id="bakiHariInput" readonly="" placeholder="Dikira automatik" type="number"/><span class="field-help">Formula: Tarikh Jangkaan Bentang Semula − Tarikh Hari Ini.</span></div>
+<div class="field"><label for="statusPeringatanInput">Status Peringatan</label><input id="statusPeringatanInput" readonly="" placeholder="Dikira automatik"/><span class="field-help">61 hari ke atas: Masih Dalam Tempoh; 0–60 hari: Peringatan; negatif: Terlepas Tarikh.</span></div>
+</div>
+<div class="form-actions project-form-actions">
+<button class="primary-btn" id="addBtn" type="submit">＋ Tambah Projek</button>
+<button class="secondary-btn" disabled="" id="updateBtn" type="button">✎ Kemas Kini</button>
+<button class="danger-btn" disabled="" id="deleteBtn" type="button">⌫ Padam</button>
+<button class="ghost-btn" id="clearBtn" type="button">↺ Kosongkan</button>
+</div>
+</form>
+</article>
+<article class="card table-card project-table-card">
+<div class="table-head">
+<div class="table-title"><h2>Database Projek STAR</h2><p id="tableSubtitle">Data daripada Excel yang dilampirkan</p></div>
+<div class="table-tools"><input class="search" id="searchInput" placeholder="Cari ID, tajuk, kluster, pembentang, status..." type="search"/></div>
+</div>
+
+<div aria-label="Skrol jadual Projek ke kiri atau kanan" class="project-scrollbar-sticky" id="projectTopScrollbar"><div class="project-scrollbar-sticky-inner" id="projectTopScrollbarInner"></div></div>
+<div class="table-wrap project-table-wrap">
+<table class="record-table project-record-table">
+<thead><tr><th>ID Kertas</th><th>Tarikh Mesyuarat</th><th>Bulan</th><th>Jenis Mesyuarat</th><th>Kluster</th><th>Pembentang</th><th>Jenis Kertas</th><th>Tajuk Kertas</th><th>Status</th><th>Tarikh Jangkaan Bentang Semula</th><th>Baki Hari</th><th>Status Peringatan</th></tr></thead>
+<tbody id="recordTableBody"></tbody>
+</table>
+</div>
+<div class="pagination">
+<span id="paginationInfo">0 rekod</span>
+<div class="page-controls"><label for="pageSize">Paparan</label><select class="page-size" id="pageSize"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option selected="" value="9999">Semua</option></select><button class="page-btn" id="prevPage" type="button">←</button><span id="pageIndicator">1 / 1</span><button class="page-btn" id="nextPage" type="button">→</button></div>
+</div>
+</article>
+</section>
+<section class="portal-view report-view" hidden="" id="laporanView">
+<div class="card report-header">
+<p id="reportSubtitle">Ringkasan pemantauan projek STAR.</p>
+<div class="report-actions">
+<div aria-label="Julat tahun laporan" class="report-year-range">
+<div class="year-filter">
+<select aria-label="Tahun mula laporan" class="year-select" id="reportFromYearSelect"></select>
+</div>
+<span aria-hidden="true" class="report-year-separator">–</span>
+<div class="year-filter">
+<select aria-label="Tahun akhir laporan" class="year-select" id="reportToYearSelect"></select>
+</div>
+</div>
+<button class="secondary-btn" id="reportExportCsvBtn" type="button">⇩ Eksport Excel</button>
+<button class="primary-btn" id="reportPrintBtn" type="button">▤ Cetak PDF</button>
+</div>
+</div>
+<section aria-label="Ringkasan laporan" class="report-summary">
+<article class="card report-summary-box"><span>Bilangan Kertas Projek</span><strong id="reportPeople">0</strong></article>
+<article class="card report-summary-box"><span>Selesai</span><strong id="reportTrips">0</strong></article>
+<article class="card report-summary-box"><span>Bentang Semula</span><strong id="reportDays">0</strong></article>
+<article class="card report-summary-box"><span>Tindakan</span><strong id="reportAction">0</strong></article>
+</section>
+<article class="card report-table-card">
+<div class="table-title report-table-title">
+<h2>Senarai Projek STAR</h2>
+<p id="reportTableSubtitle">Semua rekod projek STAR bagi tahun dipilih.</p>
+</div>
+<div class="table-wrap report-table-wrap">
+<table class="report-table">
+<thead><tr><th>ID Kertas</th><th>Tarikh Mesyuarat</th><th>Bulan</th><th>Jenis Mesyuarat</th><th>Kluster</th><th>Pembentang</th><th>Jenis Kertas</th><th>Tajuk Kertas</th><th>Status</th><th>Tarikh Jangkaan Bentang Semula</th><th>Baki Hari</th><th>Status Peringatan</th></tr></thead>
+<tbody id="reportTableBody"></tbody>
+</table>
+</div>
+</article>
+</section>
+<p class="footer-note">Data dashboard STAR adalah berdasarkan fail Excel yang dibekalkan. Perubahan baharu disimpan pada browser yang sedang digunakan sahaja.</p>
+</main>
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+<script>
+const DASHBOARD_BASE_DATA = [{"id":"KRT-001","idKertas":"KRT-001","bil":1,"nama":"Jabatan PSM","tempat":"Sumber Manusia","tujuan":"Kertas Pertimbangan","tempoh":"2026-04-27","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penyelarasan Program","tarikhMula":"2026-04-27","tarikhTamat":"2026-04-27","tahun":2026,"bulan":4,"bulanExcel":"APRIL","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Sumber Manusia","pembentang":"Jabatan PSM","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penyelarasan Program","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-002","idKertas":"KRT-002","bil":2,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Pertimbangan","tempoh":"2026-03-07","bilHari":0,"bilHariAsal":"","catatan":"Status Pelaksanaan Pelan Tindakan","tarikhMula":"2026-03-07","tarikhTamat":"2026-03-07","tahun":2026,"bulan":3,"bulanExcel":"MARCH","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Status Pelaksanaan Pelan Tindakan","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2026-12-07","bakiHari":61,"statusPeringatan":"MASIH DALAM TEMPOH"},{"id":"KRT-003","idKertas":"KRT-003","bil":3,"nama":"Jabatan Kewangan","tempat":"Kewangan","tujuan":"Kertas Pertimbangan","tempoh":"2026-03-27","bilHari":0,"bilHariAsal":"","catatan":"Status Tindakan Susulan Mesyuarat","tarikhMula":"2026-03-27","tarikhTamat":"2026-03-27","tahun":2026,"bulan":3,"bulanExcel":"MARCH","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Kewangan","pembentang":"Jabatan Kewangan","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Status Tindakan Susulan Mesyuarat","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-004","idKertas":"KRT-004","bil":4,"nama":"Jabatan Kewangan","tempat":"Kewangan","tujuan":"Kertas Makluman","tempoh":"2026-09-05","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-09-05","tarikhTamat":"2026-09-05","tahun":2026,"bulan":9,"bulanExcel":"SEPTEMBER","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Kewangan","pembentang":"Jabatan Kewangan","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-005","idKertas":"KRT-005","bil":5,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Pertimbangan","tempoh":"2026-04-20","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-04-20","tarikhTamat":"2026-04-20","tahun":2026,"bulan":4,"bulanExcel":"APRIL","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-006","idKertas":"KRT-006","bil":6,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-01-19","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-01-19","tarikhTamat":"2026-01-19","tahun":2026,"bulan":1,"bulanExcel":"JANUARY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-007","idKertas":"KRT-007","bil":7,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Pertimbangan","tempoh":"2026-06-15","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Peningkatan Produktiviti","tarikhMula":"2026-06-15","tarikhTamat":"2026-06-15","tahun":2026,"bulan":6,"bulanExcel":"JUNE","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Peningkatan Produktiviti","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-008","idKertas":"KRT-008","bil":8,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Makluman","tempoh":"2026-09-15","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Pembangunan Sistem","tarikhMula":"2026-09-15","tarikhTamat":"2026-09-15","tahun":2026,"bulan":9,"bulanExcel":"SEPTEMBER","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Pembangunan Sistem","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-009","idKertas":"KRT-009","bil":9,"nama":"Jabatan PSM","tempat":"Sumber Manusia","tujuan":"Kertas Makluman","tempoh":"2026-02-15","bilHari":0,"bilHariAsal":"","catatan":"Status Tindakan Susulan Mesyuarat","tarikhMula":"2026-02-15","tarikhTamat":"2026-02-15","tahun":2026,"bulan":2,"bulanExcel":"FEBRUARY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Sumber Manusia","pembentang":"Jabatan PSM","jenisKertas":"Kertas Makluman","tajukKertas":"Status Tindakan Susulan Mesyuarat","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-010","idKertas":"KRT-010","bil":10,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Pertimbangan","tempoh":"2026-08-14","bilHari":0,"bilHariAsal":"","catatan":"Laporan Pemantauan Projek","tarikhMula":"2026-08-14","tarikhTamat":"2026-08-14","tahun":2026,"bulan":8,"bulanExcel":"AUGUST","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Laporan Pemantauan Projek","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2026-11-18","bakiHari":42,"statusPeringatan":"PERINGATAN"},{"id":"KRT-011","idKertas":"KRT-011","bil":11,"nama":"Jabatan Kewangan","tempat":"Kewangan","tujuan":"Kertas Makluman","tempoh":"2026-08-31","bilHari":0,"bilHariAsal":"","catatan":"Status Pelaksanaan Pelan Tindakan","tarikhMula":"2026-08-31","tarikhTamat":"2026-08-31","tahun":2026,"bulan":8,"bulanExcel":"AUGUST","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Kewangan","pembentang":"Jabatan Kewangan","jenisKertas":"Kertas Makluman","tajukKertas":"Status Pelaksanaan Pelan Tindakan","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-012","idKertas":"KRT-012","bil":12,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-08-07","bilHari":0,"bilHariAsal":"","catatan":"Status Pelaksanaan Pelan Tindakan","tarikhMula":"2026-08-07","tarikhTamat":"2026-08-07","tahun":2026,"bulan":8,"bulanExcel":"AUGUST","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Status Pelaksanaan Pelan Tindakan","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-013","idKertas":"KRT-013","bil":13,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-09-09","bilHari":0,"bilHariAsal":"","catatan":"Status Tindakan Susulan Mesyuarat","tarikhMula":"2026-09-09","tarikhTamat":"2026-09-09","tahun":2026,"bulan":9,"bulanExcel":"SEPTEMBER","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Status Tindakan Susulan Mesyuarat","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-014","idKertas":"KRT-014","bil":14,"nama":"Jabatan PSM","tempat":"Sumber Manusia","tujuan":"Kertas Pertimbangan","tempoh":"2026-01-03","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-01-03","tarikhTamat":"2026-01-03","tahun":2026,"bulan":1,"bulanExcel":"JANUARY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Sumber Manusia","pembentang":"Jabatan PSM","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-015","idKertas":"KRT-015","bil":15,"nama":"Jabatan Kewangan","tempat":"Kewangan","tujuan":"Kertas Makluman","tempoh":"2026-03-12","bilHari":0,"bilHariAsal":"","catatan":"Status Tindakan Susulan Mesyuarat","tarikhMula":"2026-03-12","tarikhTamat":"2026-03-12","tahun":2026,"bulan":3,"bulanExcel":"MARCH","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Kewangan","pembentang":"Jabatan Kewangan","jenisKertas":"Kertas Makluman","tajukKertas":"Status Tindakan Susulan Mesyuarat","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2026-12-04","bakiHari":58,"statusPeringatan":"PERINGATAN"},{"id":"KRT-016","idKertas":"KRT-016","bil":16,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Pertimbangan","tempoh":"2026-09-26","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-09-26","tarikhTamat":"2026-09-26","tahun":2026,"bulan":9,"bulanExcel":"SEPTEMBER","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-017","idKertas":"KRT-017","bil":17,"nama":"Jabatan PSM","tempat":"Sumber Manusia","tujuan":"Kertas Pertimbangan","tempoh":"2026-03-28","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Peningkatan Produktiviti","tarikhMula":"2026-03-28","tarikhTamat":"2026-03-28","tahun":2026,"bulan":3,"bulanExcel":"MARCH","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Sumber Manusia","pembentang":"Jabatan PSM","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Peningkatan Produktiviti","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-018","idKertas":"KRT-018","bil":18,"nama":"Jabatan PSM","tempat":"Sumber Manusia","tujuan":"Kertas Pertimbangan","tempoh":"2026-03-14","bilHari":0,"bilHariAsal":"","catatan":"Laporan Prestasi Operasi","tarikhMula":"2026-03-14","tarikhTamat":"2026-03-14","tahun":2026,"bulan":3,"bulanExcel":"MARCH","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Sumber Manusia","pembentang":"Jabatan PSM","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Laporan Prestasi Operasi","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2027-02-24","bakiHari":140,"statusPeringatan":"MASIH DALAM TEMPOH"},{"id":"KRT-019","idKertas":"KRT-019","bil":19,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-01-29","bilHari":0,"bilHariAsal":"","catatan":"Laporan Pemantauan Projek","tarikhMula":"2026-01-29","tarikhTamat":"2026-01-29","tahun":2026,"bulan":1,"bulanExcel":"JANUARY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Laporan Pemantauan Projek","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-020","idKertas":"KRT-020","bil":20,"nama":"Jabatan Kewangan","tempat":"Kewangan","tujuan":"Kertas Makluman","tempoh":"2026-03-30","bilHari":0,"bilHariAsal":"","catatan":"Laporan Prestasi Operasi","tarikhMula":"2026-03-30","tarikhTamat":"2026-03-30","tahun":2026,"bulan":3,"bulanExcel":"MARCH","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Kewangan","pembentang":"Jabatan Kewangan","jenisKertas":"Kertas Makluman","tajukKertas":"Laporan Prestasi Operasi","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-021","idKertas":"KRT-021","bil":21,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Pertimbangan","tempoh":"2026-06-01","bilHari":0,"bilHariAsal":"","catatan":"Laporan Prestasi Operasi","tarikhMula":"2026-06-01","tarikhTamat":"2026-06-01","tahun":2026,"bulan":6,"bulanExcel":"JUNE","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Laporan Prestasi Operasi","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-022","idKertas":"KRT-022","bil":22,"nama":"Jabatan PSM","tempat":"Sumber Manusia","tujuan":"Kertas Makluman","tempoh":"2026-04-21","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penyelarasan Program","tarikhMula":"2026-04-21","tarikhTamat":"2026-04-21","tahun":2026,"bulan":4,"bulanExcel":"APRIL","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Sumber Manusia","pembentang":"Jabatan PSM","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Penyelarasan Program","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-023","idKertas":"KRT-023","bil":23,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Makluman","tempoh":"2026-06-28","bilHari":0,"bilHariAsal":"","catatan":"Laporan Pemantauan Projek","tarikhMula":"2026-06-28","tarikhTamat":"2026-06-28","tahun":2026,"bulan":6,"bulanExcel":"JUNE","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Makluman","tajukKertas":"Laporan Pemantauan Projek","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-024","idKertas":"KRT-024","bil":24,"nama":"Jabatan Kewangan","tempat":"Kewangan","tujuan":"Kertas Makluman","tempoh":"2026-02-02","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-02-02","tarikhTamat":"2026-02-02","tahun":2026,"bulan":2,"bulanExcel":"FEBRUARY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Kewangan","pembentang":"Jabatan Kewangan","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2026-10-01","bakiHari":-6,"statusPeringatan":"TERLEPAS TARIKH"},{"id":"KRT-025","idKertas":"KRT-025","bil":25,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-09-03","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penyelarasan Program","tarikhMula":"2026-09-03","tarikhTamat":"2026-09-03","tahun":2026,"bulan":9,"bulanExcel":"SEPTEMBER","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Penyelarasan Program","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-026","idKertas":"KRT-026","bil":26,"nama":"Jabatan Kewangan","tempat":"Kewangan","tujuan":"Kertas Pertimbangan","tempoh":"2026-05-29","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-05-29","tarikhTamat":"2026-05-29","tahun":2026,"bulan":5,"bulanExcel":"MAY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Kewangan","pembentang":"Jabatan Kewangan","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-027","idKertas":"KRT-027","bil":27,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Pertimbangan","tempoh":"2026-06-01","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Peningkatan Produktiviti","tarikhMula":"2026-06-01","tarikhTamat":"2026-06-01","tahun":2026,"bulan":6,"bulanExcel":"JUNE","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Peningkatan Produktiviti","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-028","idKertas":"KRT-028","bil":28,"nama":"Jabatan Kewangan","tempat":"Kewangan","tujuan":"Kertas Makluman","tempoh":"2026-05-18","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Peningkatan Produktiviti","tarikhMula":"2026-05-18","tarikhTamat":"2026-05-18","tahun":2026,"bulan":5,"bulanExcel":"MAY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Kewangan","pembentang":"Jabatan Kewangan","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Peningkatan Produktiviti","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-029","idKertas":"KRT-029","bil":29,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Pertimbangan","tempoh":"2026-06-02","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-06-02","tarikhTamat":"2026-06-02","tahun":2026,"bulan":6,"bulanExcel":"JUNE","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-030","idKertas":"KRT-030","bil":30,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Pertimbangan","tempoh":"2026-05-05","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penyelarasan Program","tarikhMula":"2026-05-05","tarikhTamat":"2026-05-05","tahun":2026,"bulan":5,"bulanExcel":"MAY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penyelarasan Program","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2026-11-27","bakiHari":51,"statusPeringatan":"PERINGATAN"},{"id":"KRT-031","idKertas":"KRT-031","bil":31,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-03-03","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penyelarasan Program","tarikhMula":"2026-03-03","tarikhTamat":"2026-03-03","tahun":2026,"bulan":3,"bulanExcel":"MARCH","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Penyelarasan Program","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2026-09-25","bakiHari":-12,"statusPeringatan":"TERLEPAS TARIKH"},{"id":"KRT-032","idKertas":"KRT-032","bil":32,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-04-09","bilHari":0,"bilHariAsal":"","catatan":"Laporan Prestasi Operasi","tarikhMula":"2026-04-09","tarikhTamat":"2026-04-09","tahun":2026,"bulan":4,"bulanExcel":"APRIL","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Laporan Prestasi Operasi","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-033","idKertas":"KRT-033","bil":33,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-05-19","bilHari":0,"bilHariAsal":"","catatan":"Laporan Prestasi Operasi","tarikhMula":"2026-05-19","tarikhTamat":"2026-05-19","tahun":2026,"bulan":5,"bulanExcel":"MAY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Pengurusan","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Laporan Prestasi Operasi","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-034","idKertas":"KRT-034","bil":34,"nama":"Jabatan Operasi","tempat":"Operasi","tujuan":"Kertas Makluman","tempoh":"2026-05-10","bilHari":0,"bilHariAsal":"","catatan":"Laporan Prestasi Operasi","tarikhMula":"2026-05-10","tarikhTamat":"2026-05-10","tahun":2026,"bulan":5,"bulanExcel":"MAY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Operasi","pembentang":"Jabatan Operasi","jenisKertas":"Kertas Makluman","tajukKertas":"Laporan Prestasi Operasi","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-035","idKertas":"KRT-035","bil":35,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Makluman","tempoh":"2026-07-19","bilHari":0,"bilHariAsal":"","catatan":"Status Pelaksanaan Pelan Tindakan","tarikhMula":"2026-07-19","tarikhTamat":"2026-07-19","tahun":2026,"bulan":7,"bulanExcel":"JULY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Makluman","tajukKertas":"Status Pelaksanaan Pelan Tindakan","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2026-09-30","bakiHari":-7,"statusPeringatan":"TERLEPAS TARIKH"},{"id":"KRT-036","idKertas":"KRT-036","bil":36,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Pertimbangan","tempoh":"2026-07-29","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penyelarasan Program","tarikhMula":"2026-07-29","tarikhTamat":"2026-07-29","tahun":2026,"bulan":7,"bulanExcel":"JULY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penyelarasan Program","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-037","idKertas":"KRT-037","bil":37,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Makluman","tempoh":"2026-08-31","bilHari":0,"bilHariAsal":"","catatan":"Laporan Pemantauan Projek","tarikhMula":"2026-08-31","tarikhTamat":"2026-08-31","tahun":2026,"bulan":8,"bulanExcel":"AUGUST","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Makluman","tajukKertas":"Laporan Pemantauan Projek","status":"Tindakan","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-038","idKertas":"KRT-038","bil":38,"nama":"Jabatan PSM","tempat":"Sumber Manusia","tujuan":"Kertas Pertimbangan","tempoh":"2026-09-05","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Penambahbaikan Proses Kerja","tarikhMula":"2026-09-05","tarikhTamat":"2026-09-05","tahun":2026,"bulan":9,"bulanExcel":"SEPTEMBER","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Sumber Manusia","pembentang":"Jabatan PSM","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Cadangan Penambahbaikan Proses Kerja","status":"Bentang Semula","tarikhJangkaanBentangSemula":"2027-02-09","bakiHari":125,"statusPeringatan":"MASIH DALAM TEMPOH"},{"id":"KRT-039","idKertas":"KRT-039","bil":39,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Makluman","tempoh":"2026-03-18","bilHari":0,"bilHariAsal":"","catatan":"Cadangan Pembangunan Sistem","tarikhMula":"2026-03-18","tarikhTamat":"2026-03-18","tahun":2026,"bulan":3,"bulanExcel":"MARCH","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Khas","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Makluman","tajukKertas":"Cadangan Pembangunan Sistem","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""},{"id":"KRT-040","idKertas":"KRT-040","bil":40,"nama":"Jabatan Korporat","tempat":"Korporat","tujuan":"Kertas Pertimbangan","tempoh":"2026-01-24","bilHari":0,"bilHariAsal":"","catatan":"Status Pelaksanaan Pelan Tindakan","tarikhMula":"2026-01-24","tarikhTamat":"2026-01-24","tahun":2026,"bulan":1,"bulanExcel":"JANUARY","sumber":"Excel STAR","jenisMesyuarat":"Mesyuarat Operasi","kluster":"Korporat","pembentang":"Jabatan Korporat","jenisKertas":"Kertas Pertimbangan","tajukKertas":"Status Pelaksanaan Pelan Tindakan","status":"Selesai","tarikhJangkaanBentangSemula":"","bakiHari":"","statusPeringatan":""}];
+const STORAGE_KEY = 'mpc_star_dashboard_v6_project_search_20261007';
+const USER_DATA = []; // Legacy warga module disabled; menu Warga has been removed.
+const THEME_KEY = 'mpc_keluar_negara_theme';
+const USER_STORAGE_KEY = 'mpc_warga_database_v3_20260721_latest';
+const MONTHS = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'];
+const MONTHS_FULL = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+const DEFAULT_YEAR = 2026;
+let records = loadRecords();
+let users = loadUsers();
+let selectedYear = String(DEFAULT_YEAR);
+let reportFromYear = String(DEFAULT_YEAR);
+let reportToYear = String(DEFAULT_YEAR);
+let selectedId = null;
+let selectedWargaId = null;
+let currentPage = 1;
+let pageSize = 9999;
+let autocompleteIndex = -1;
+let toastTimer;
+
+const el = id => document.getElementById(id);
+const escapeHtml = (value='') => String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const normalizeName = value => String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('ms-MY');
+const formatNumber = n => new Intl.NumberFormat('ms-MY').format(Number(n || 0));
+const safeStorageGet = key => { try { return window.localStorage ? localStorage.getItem(key) : null; } catch (e) { return null; } };
+const safeStorageSet = (key, value) => { try { if (window.localStorage) localStorage.setItem(key, value); } catch (e) {} };
+
+function loadRecords() {
+  try {
+    const stored = safeStorageGet(STORAGE_KEY);
+    const source = stored ? JSON.parse(stored) : structuredClone(DASHBOARD_BASE_DATA);
+    return Array.isArray(source) ? source.map(normalizeRecord) : structuredClone(DASHBOARD_BASE_DATA).map(normalizeRecord);
+  } catch (e) {
+    return JSON.parse(JSON.stringify(DASHBOARD_BASE_DATA)).map(normalizeRecord);
+  }
+}
+function saveRecords() { safeStorageSet(STORAGE_KEY, JSON.stringify(records)); }
+
+function createDefaultUsers() {
+  return USER_DATA.map((nama, index) => ({id:`warga-${index + 1}`, nama}));
+}
+function loadUsers() {
+  try {
+    const stored = safeStorageGet(USER_STORAGE_KEY);
+    const parsed = stored ? JSON.parse(stored) : createDefaultUsers();
+    return Array.isArray(parsed) ? parsed.filter(user => user && String(user.nama || '').trim()) : createDefaultUsers();
+  } catch (e) {
+    return createDefaultUsers();
+  }
+}
+function saveUsers() { safeStorageSet(USER_STORAGE_KEY, JSON.stringify(users)); }
+function sortedUsers() { return [...users].sort((a,b) => a.nama.localeCompare(b.nama, 'ms-MY', {sensitivity:'base'})); }
+
+function showToast(message) {
+  const toast = el('toast'); toast.textContent = message; toast.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+function isoDateFromParts(day, month, year) {
+  const d = Number(day), m = Number(month), y = Number(year);
+  if (!Number.isInteger(d) || !Number.isInteger(m) || !Number.isInteger(y) || y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return '';
+  const date = new Date(Date.UTC(y, m - 1, d));
+  if (date.getUTCFullYear() !== y || date.getUTCMonth() !== m - 1 || date.getUTCDate() !== d) return '';
+  return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+function isValidIsoDate(value) {
+  const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return Boolean(match && isoDateFromParts(match[3], match[2], match[1]) === value);
+}
+function parsePeriodDates(period) {
+  const text = String(period || '').replace(/[–—]/g, '-').trim();
+  const fullDates = [...text.matchAll(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g)];
+  if (fullDates.length >= 2) {
+    return {
+      tarikhMula: isoDateFromParts(fullDates[0][1], fullDates[0][2], fullDates[0][3]),
+      tarikhTamat: isoDateFromParts(fullDates[fullDates.length - 1][1], fullDates[fullDates.length - 1][2], fullDates[fullDates.length - 1][3])
+    };
+  }
+  if (fullDates.length === 1) {
+    const only = fullDates[0];
+    const tarikhPenuh = isoDateFromParts(only[1], only[2], only[3]);
+    const before = text.slice(0, only.index);
+    const abbreviatedStart = before.match(/(\d{1,2})(?:\/(\d{1,2}))?\s*-\s*$/);
+    if (abbreviatedStart) {
+      return {
+        tarikhMula: isoDateFromParts(abbreviatedStart[1], abbreviatedStart[2] || only[2], only[3]),
+        tarikhTamat: tarikhPenuh
+      };
+    }
+    return {tarikhMula: tarikhPenuh, tarikhTamat: ''};
+  }
+  return {tarikhMula: '', tarikhTamat: ''};
+}
+function formatIsoDate(value) {
+  if (!isValidIsoDate(value)) return '';
+  const [year, month, day] = value.split('-').map(Number);
+  return `${String(day).padStart(2,'0')}/${String(month).padStart(2,'0')}/${year}`;
+}
+function buildPeriod(tarikhMula, tarikhTamat) {
+  const mula = formatIsoDate(tarikhMula), tamat = formatIsoDate(tarikhTamat);
+  return mula && tamat ? `${mula} - ${tamat}` : (mula || tamat || '');
+}
+function calculateDayDifference(tarikhMula, tarikhTamat) {
+  if (!isValidIsoDate(tarikhMula) || !isValidIsoDate(tarikhTamat)) return null;
+  const [startYear, startMonth, startDay] = tarikhMula.split('-').map(Number);
+  const [endYear, endMonth, endDay] = tarikhTamat.split('-').map(Number);
+  const difference = Math.round((Date.UTC(endYear, endMonth - 1, endDay) - Date.UTC(startYear, startMonth - 1, startDay)) / 86400000);
+  return difference >= 0 ? difference + 1 : null;
+}
+function derivePeriod(period) {
+  const dates = parsePeriodDates(period);
+  const parts = isValidIsoDate(dates.tarikhMula) ? dates.tarikhMula.split('-').map(Number) : [];
+  return {...dates, tahun: parts[0] || null, bulan: parts[1] || null};
+}
+function normalizeRecord(record) {
+  const parsed = parsePeriodDates(record && record.tempoh);
+  const tarikhMula = isValidIsoDate(record && record.tarikhMula) ? record.tarikhMula : parsed.tarikhMula;
+  const tarikhTamat = isValidIsoDate(record && record.tarikhTamat) ? record.tarikhTamat : parsed.tarikhTamat;
+  const calculatedDays = calculateDayDifference(tarikhMula, tarikhTamat);
+  const existingDays = Number(record && record.bilHari);
+  const isDashboardRecord = String(record && record.sumber || '').toLocaleLowerCase('ms-MY') === 'dashboard' || String(record && record.id || '').startsWith('user-');
+  const bilHari = isDashboardRecord && calculatedDays !== null
+    ? calculatedDays
+    : (Number.isFinite(existingDays) && existingDays >= 0 ? existingDays : (calculatedDays ?? 0));
+  const dateParts = isValidIsoDate(tarikhMula) ? tarikhMula.split('-').map(Number) : [];
+  return {
+    ...record,
+    tarikhMula,
+    tarikhTamat,
+    tempoh: buildPeriod(tarikhMula, tarikhTamat) || String(record && record.tempoh || ''),
+    bilHari,
+    bilHariAsal: `${bilHari} hari`,
+    tahun: dateParts[0] || (record && record.tahun) || null,
+    bulan: dateParts[1] || (record && record.bulan) || null
+  };
+}
+function syncDateBounds() {
+  const mula = el('tarikhMula'), tamat = el('tarikhTamat');
+  if (!mula || !tamat) return;
+  tamat.min = mula.value || '';
+  if (mula.value && tamat.value && tamat.value < mula.value) tamat.value = '';
+}
+function filteredRecords({applySearch=true}={}) {
+  const searchEl = el('searchInput');
+  const q = applySearch && searchEl ? searchEl.value.trim().toLocaleLowerCase('ms-MY') : '';
+  return records.filter(r => {
+    const yearOk = selectedYear === 'all' || Number(r.tahun) === Number(selectedYear);
+    if (!yearOk) return false;
+    if (!q) return true;
+    return [r.idKertas, r.tarikhMula, r.bulanExcel, r.jenisMesyuarat, r.kluster, r.pembentang, r.jenisKertas, r.tajukKertas, r.status, r.tarikhJangkaanBentangSemula, r.bakiHari, r.statusPeringatan]
+      .some(v => String(v ?? '').toLocaleLowerCase('ms-MY').includes(q));
+  });
+}
+function reportFilteredRecords() {
+  const fromYear = Number(reportFromYear);
+  const toYear = Number(reportToYear);
+  if (!Number.isFinite(fromYear) || !Number.isFinite(toYear)) return [];
+  const minimumYear = Math.min(fromYear, toYear);
+  const maximumYear = Math.max(fromYear, toYear);
+  return records.filter(record => Number(record.tahun) >= minimumYear && Number(record.tahun) <= maximumYear);
+}
+function reportYearLabel() {
+  return reportFromYear === reportToYear
+    ? `Tahun ${reportFromYear}`
+    : `Tahun ${reportFromYear} hingga ${reportToYear}`;
+}
+function reportYearFileLabel() {
+  return reportFromYear === reportToYear
+    ? reportFromYear
+    : `${reportFromYear}_hingga_${reportToYear}`;
+}
+function updateReportYearRange(changedSelect) {
+  const fromYear = Number(reportFromYear);
+  const toYear = Number(reportToYear);
+  if (fromYear > toYear) {
+    if (changedSelect === 'from') reportToYear = reportFromYear;
+    else reportFromYear = reportToYear;
+  }
+  if (el('reportFromYearSelect')) el('reportFromYearSelect').value = reportFromYear;
+  if (el('reportToYearSelect')) el('reportToYearSelect').value = reportToYear;
+  renderReport();
+}
+function buildYearButtons() {
+  const years = [...new Set(records.map(r => Number(r.tahun)).filter(Boolean))].sort((a,b) => b-a);
+  const defaultYear = years.includes(DEFAULT_YEAR) ? String(DEFAULT_YEAR) : (years.length ? String(years[0]) : 'all');
+  if (selectedYear !== 'all' && !years.includes(Number(selectedYear))) selectedYear = defaultYear;
+  const options = [{value:'all', label:'Semua Tahun'}, ...years.map(y => ({value:String(y), label:String(y)}))];
+  const yearOptions = options.map(x => `<option value="${x.value}">${x.label}</option>`).join('');
+  el('yearSelect').innerHTML = yearOptions;
+  el('yearSelect').value = String(selectedYear);
+
+  const reportYears = [...years].sort((a,b) => a-b);
+  const reportDefaultYear = reportYears.includes(DEFAULT_YEAR)
+    ? String(DEFAULT_YEAR)
+    : (reportYears.length ? String(reportYears[reportYears.length - 1]) : '');
+  if (!reportYears.includes(Number(reportFromYear))) reportFromYear = reportDefaultYear;
+  if (!reportYears.includes(Number(reportToYear))) reportToYear = reportDefaultYear;
+  const reportYearOptions = reportYears.map(year => `<option value="${year}">${year}</option>`).join('');
+  if (el('reportFromYearSelect')) {
+    el('reportFromYearSelect').innerHTML = reportYearOptions;
+    el('reportFromYearSelect').value = reportFromYear;
+  }
+  if (el('reportToYearSelect')) {
+    el('reportToYearSelect').innerHTML = reportYearOptions;
+    el('reportToYearSelect').value = reportToYear;
+  }
+}
+function renderKPIs(data) {
+  // KPI 1: count only rows with a non-empty ID Kertas from the Excel source.
+  const totalKertas = data.filter(r => String(r.idKertas || r.id || '').trim() !== '').length;
+  // KPI 2 & 3: derive directly from the Excel Status column.
+  const selesai = data.filter(r => String(r.status || '').trim().toLocaleLowerCase('ms-MY') === 'selesai').length;
+  const bentangSemula = data.filter(r => String(r.status || '').trim().toLocaleLowerCase('ms-MY') === 'bentang semula').length;
+  const tindakan = data.filter(r => String(r.status || '').trim().toLocaleLowerCase('ms-MY') === 'tindakan').length;
+  el('kpiPeople').textContent = formatNumber(totalKertas);
+  el('kpiTrips').textContent = formatNumber(selesai);
+  el('kpiDays').textContent = formatNumber(bentangSemula);
+  el('kpiAction').textContent = formatNumber(tindakan);
+}
+function renderChart(data) {
+  const counts = Array(12).fill(0);
+  const excelMonthIndex = {JANUARY:0,FEBRUARY:1,MARCH:2,APRIL:3,MAY:4,JUNE:5,JULY:6,AUGUST:7,SEPTEMBER:8,OCTOBER:9,NOVEMBER:10,DECEMBER:11};
+  data.forEach(r => {
+    const excelMonth = String(r.bulanExcel || '').trim().toUpperCase();
+    const idx = Object.prototype.hasOwnProperty.call(excelMonthIndex, excelMonth) ? excelMonthIndex[excelMonth] : (Number(r.bulan) >= 1 && Number(r.bulan) <= 12 ? Number(r.bulan)-1 : -1);
+    if (idx >= 0 && idx < 12) counts[idx]++;
+  });
+  const width = 960, height = 320, pad = {l:48, r:14, t:14, b:45};
+  const plotW = width-pad.l-pad.r, plotH = height-pad.t-pad.b;
+  const max = Math.max(1, ...counts);
+  const yMax = max <= 10 ? 10 : Math.ceil(max/10)*10;
+  const baseY = pad.t + plotH;
+
+  // Titik pertama ialah 0 pada paksi. Januari bermula selepas garis paksi menegak.
+  const axisValues = [0, ...counts];
+  const axisLabels = ['0', ...MONTHS];
+  const stepX = plotW / 12;
+  const points = axisValues.map((v,i) => ({x: pad.l + i*stepX, y: baseY - (v/yMax)*plotH, v, isOrigin: i === 0}));
+
+  const smoothPath = pts => {
+    if (!pts.length) return '';
+    if (pts.length === 1) return `M ${pts[0].x} ${pts[0].y}`;
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+    }
+    return d;
+  };
+
+  const linePath = smoothPath(points);
+  const areaPath = `${linePath} L ${points[points.length-1].x} ${baseY} L ${points[0].x} ${baseY} Z`;
+
+  const horizontalGrid = Array.from({length:6},(_,i) => {
+    const val = Math.round((yMax/5)*(5-i));
+    const y = pad.t + (plotH/5)*i;
+    return `<line class="chart-grid" x1="${pad.l}" y1="${y}" x2="${pad.l+plotW}" y2="${y}"></line><text class="chart-axis-label" x="${pad.l-10}" y="${y+4}" text-anchor="end">${val}</text>`;
+  }).join('');
+
+  // Jangan lukis grid menegak pada titik 0 supaya Januari tidak bertindih dengan paksi menegak.
+  const verticalGrid = points.slice(1).map(p => `<line class="chart-grid" x1="${p.x}" y1="${pad.t}" x2="${p.x}" y2="${baseY}"></line>`).join('');
+  const axisLines = `<line class="chart-axis-line" x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${baseY+4}"></line><line class="chart-axis-line" x1="${pad.l}" y1="${baseY}" x2="${pad.l+plotW}" y2="${baseY}"></line>`;
+  const labels = points.map((p,i) => `<text class="chart-month-label" x="${p.x}" y="${height-14}" text-anchor="middle">${axisLabels[i]}</text>`).join('');
+  const circles = points.slice(1).map((p,i) => `<g><circle class="chart-point" cx="${p.x}" cy="${p.y}" r="5.2"><title>${MONTHS_FULL[i]}: ${p.v} mesyuarat</title></circle>${p.v ? `<text class="chart-value" x="${p.x}" y="${p.y-14}" text-anchor="middle">${p.v}</text>` : ''}</g>`).join('');
+
+  el('chartContainer').innerHTML = `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Graf trend mesyuarat bulanan bermula pada 0 diikuti Januari"><defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a73e8" stop-opacity=".18"/><stop offset="100%" stop-color="#1a73e8" stop-opacity="0.02"/></linearGradient></defs>${horizontalGrid}${verticalGrid}${axisLines}<path class="chart-area" d="${areaPath}"></path><path class="chart-line" d="${linePath}"></path>${circles}${labels}</svg>`;
+  el('chartYearPill').textContent = selectedYear === 'all' ? 'Semua Tahun' : String(selectedYear);
+}
+function renderTop10(data) {
+  const map = new Map();
+  data.forEach(r => {
+    const key = normalizeName(r.nama); if (!key) return;
+    if (!map.has(key)) map.set(key,{name:r.nama,count:0});
+    map.get(key).count++;
+  });
+  const top = [...map.values()].sort((a,b) => b.count-a.count || a.name.localeCompare(b.name,'ms')).slice(0,10);
+  el('topCountPill').textContent = 'Kekerapan';
+  if (!top.length) { el('topList').innerHTML = '<div class="empty-state">Tiada data untuk dipaparkan.</div>'; return; }
+  el('topList').innerHTML = top.map((x,i) => `<div class="top-row"><div class="rank">${i+1}</div><div class="top-name"><div class="top-name-line"><span title="${escapeHtml(x.name)}">${escapeHtml(x.name)}</span></div></div><div class="top-count">${x.count}</div></div>`).join('');
+}
+function normalizeProjectSearch(value) {
+  return String(value || '')
+    .trim()
+    .toLocaleLowerCase('ms-MY')
+    .replace(/\s+/g, ' ');
+}
+function normalizeProjectIdSearch(value) {
+  return normalizeProjectSearch(value).replace(/[^a-z0-9]/g, '');
+}
+function renderOfficerSearch() {
+  const input = el('officerSearchInput');
+  const container = el('officerSearchResults');
+  if (!input || !container) return;
+
+  const q = normalizeProjectSearch(input.value);
+  const qId = normalizeProjectIdSearch(input.value);
+  if (!q) {
+    container.innerHTML = '<div class="empty-state">Masukkan ID Kertas atau Tajuk Kertas untuk membuat carian.</div>';
+    return;
+  }
+
+  // Search against the active project database. If browser storage ever contains
+  // an older non-project schema, automatically fall back to the embedded Excel data.
+  const activeHasProjectFields = records.some(r => String(r.idKertas || '').trim() || String(r.tajukKertas || '').trim());
+  const searchSource = activeHasProjectFields ? records : DASHBOARD_BASE_DATA.map(normalizeRecord);
+  const yearData = searchSource.filter(r => selectedYear === 'all' || Number(r.tahun) === Number(selectedYear));
+  const matches = yearData.filter(r => {
+    const idRaw = String(r.idKertas || r.id || '');
+    const titleRaw = String(r.tajukKertas || r.catatan || '');
+    const id = normalizeProjectSearch(idRaw);
+    const idCompact = normalizeProjectIdSearch(idRaw);
+    const title = normalizeProjectSearch(titleRaw);
+    return id.includes(q) || (qId && idCompact.includes(qId)) || title.includes(q);
+  }).sort((a,b) => String(a.idKertas || a.id || '').localeCompare(String(b.idKertas || b.id || ''), 'ms-MY'));
+
+  if (!matches.length) {
+    const yearLabel = selectedYear === 'all' ? 'semua tahun' : `tahun ${selectedYear}`;
+    container.innerHTML = `<div class="empty-state">Tiada projek yang sepadan bagi ${yearLabel}.</div>`;
+    return;
+  }
+
+  container.innerHTML = matches.map(r => {
+    const id = r.idKertas || r.id || '—';
+    const tarikh = r.tarikhMula ? formatIsoDate(r.tarikhMula) : '—';
+    const target = r.tarikhJangkaanBentangSemula ? formatIsoDate(r.tarikhJangkaanBentangSemula) : '—';
+    const bakiDinamik = calculateBakiHariFromToday(r.tarikhJangkaanBentangSemula || '');
+    const baki = bakiDinamik === '' ? '—' : formatNumber(Number(bakiDinamik));
+    const reminder = dynamicReminderForRecord(r) || '—';
+    return `<section class="officer-person-card">
+      <div class="officer-person-head">
+        <h3>${escapeHtml(id)} · ${escapeHtml(r.tajukKertas || r.catatan || 'Tanpa tajuk')}</h3>
+        <span class="count-pill">${escapeHtml(r.status || '—')}</span>
+      </div>
+      <div class="officer-trip-list">
+        <div class="officer-trip-row">
+          <div class="officer-trip-number">1</div>
+          <div class="officer-detail"><span class="officer-detail-label">Tarikh Mesyuarat</span><span class="officer-detail-value">${escapeHtml(tarikh)}</span></div>
+          <div class="officer-detail"><span class="officer-detail-label">Jenis Mesyuarat</span><span class="officer-detail-value">${escapeHtml(r.jenisMesyuarat || '—')}</span></div>
+          <div class="officer-detail"><span class="officer-detail-label">Kluster</span><span class="officer-detail-value">${escapeHtml(r.kluster || '—')}</span></div>
+          <div class="officer-detail"><span class="officer-detail-label">Pembentang</span><span class="officer-detail-value">${escapeHtml(r.pembentang || r.nama || '—')}</span></div>
+        </div>
+        <div class="officer-trip-row">
+          <div class="officer-trip-number">2</div>
+          <div class="officer-detail"><span class="officer-detail-label">Jenis Kertas</span><span class="officer-detail-value">${escapeHtml(r.jenisKertas || r.tujuan || '—')}</span></div>
+          <div class="officer-detail"><span class="officer-detail-label">Tarikh Jangkaan Bentang Semula</span><span class="officer-detail-value">${escapeHtml(target)}</span></div>
+          <div class="officer-detail"><span class="officer-detail-label">Baki Hari</span><span class="officer-detail-value">${escapeHtml(baki)}</span></div>
+          <div class="officer-detail"><span class="officer-detail-label">Status Peringatan</span><span class="officer-detail-value">${escapeHtml(reminder)}</span></div>
+        </div>
+      </div>
+    </section>`;
+  }).join('');
+}
+
+
+function syncProjectHorizontalScrollbar() {
+  const topBar = el('projectTopScrollbar');
+  const topInner = el('projectTopScrollbarInner');
+  const tableWrap = document.querySelector('.project-table-wrap');
+  const table = document.querySelector('.project-record-table');
+  if (!topBar || !topInner || !tableWrap || !table) return;
+  const width = Math.max(table.scrollWidth, tableWrap.scrollWidth, 1880);
+  topInner.style.width = `${width}px`;
+  topBar.hidden = width <= tableWrap.clientWidth + 2;
+}
+function initProjectHorizontalScrollbar() {
+  const topBar = el('projectTopScrollbar');
+  const tableWrap = document.querySelector('.project-table-wrap');
+  if (!topBar || !tableWrap || topBar.dataset.ready === '1') return;
+  topBar.dataset.ready = '1';
+  let syncing = false;
+  topBar.addEventListener('scroll', () => {
+    if (syncing) return;
+    syncing = true;
+    tableWrap.scrollLeft = topBar.scrollLeft;
+    syncing = false;
+  });
+  tableWrap.addEventListener('scroll', () => {
+    if (syncing) return;
+    syncing = true;
+    topBar.scrollLeft = tableWrap.scrollLeft;
+    syncing = false;
+  });
+  window.addEventListener('resize', syncProjectHorizontalScrollbar);
+  syncProjectHorizontalScrollbar();
+}
+
+function renderTable() {
+  const data = filteredRecords();
+  const totalPages = Math.max(1, Math.ceil(data.length/pageSize));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = (currentPage-1)*pageSize;
+  const pageData = data.slice(start, start+pageSize);
+  const statusClass = value => {
+    const v=String(value||'').toLocaleLowerCase('ms-MY');
+    if(v==='selesai') return 'selesai';
+    if(v==='bentang semula') return 'bentang-semua';
+    if(v==='tindakan') return 'tindakan';
+    return '';
+  };
+  el('recordTableBody').innerHTML = pageData.length ? pageData.map(r => `<tr class="${r.id===selectedId?'selected':''}">
+    <td><button class="row-link" type="button" data-select-id="${escapeHtml(r.id)}" title="Klik untuk edit rekod">${escapeHtml(r.idKertas || r.id || '—')}</button></td>
+    <td>${escapeHtml(formatIsoDate(r.tarikhMula) || '—')}</td>
+    <td>${escapeHtml(r.bulanExcel || '—')}</td>
+    <td>${escapeHtml(r.jenisMesyuarat || '—')}</td>
+    <td>${escapeHtml(r.kluster || '—')}</td>
+    <td>${escapeHtml(r.pembentang || '—')}</td>
+    <td>${escapeHtml(r.jenisKertas || '—')}</td>
+    <td>${escapeHtml(r.tajukKertas || '—')}</td>
+    <td><span class="status-chip ${statusClass(r.status)}">${escapeHtml(r.status || '—')}</span></td>
+    <td>${escapeHtml(formatIsoDate(r.tarikhJangkaanBentangSemula) || '—')}</td>
+    <td>${calculateBakiHariFromToday(r.tarikhJangkaanBentangSemula || '') === '' ? '—' : escapeHtml(formatNumber(calculateBakiHariFromToday(r.tarikhJangkaanBentangSemula || '')))}</td>
+    <td>${escapeHtml(dynamicReminderForRecord(r) || '—')}</td>
+  </tr>`).join('') : '<tr><td colspan="12"><div class="empty-state">Tiada rekod sepadan dengan carian atau tahun dipilih.</div></td></tr>';
+  el('recordTableBody').querySelectorAll('[data-select-id]').forEach(btn => btn.addEventListener('click', () => selectRecord(btn.dataset.selectId)));
+  el('paginationInfo').textContent = data.length ? `Memaparkan ${start+1}–${Math.min(start+pageSize,data.length)} daripada ${data.length} rekod` : '0 rekod';
+  el('pageIndicator').textContent = `${currentPage} / ${totalPages}`;
+  el('prevPage').disabled = currentPage <= 1;
+  el('nextPage').disabled = currentPage >= totalPages;
+  const yearText = selectedYear === 'all' ? 'semua tahun' : `tahun ${selectedYear}`;
+  const q = el('searchInput').value.trim();
+  el('tableSubtitle').textContent = `${data.length} rekod projek bagi ${yearText}${q ? ` • Carian: “${q}”` : ''}`;
+  requestAnimationFrame(syncProjectHorizontalScrollbar);
+}
+function setPurposeSelectValue(value) {
+  const select = el('tujuan');
+  const current = String(value || '').trim();
+  [...select.querySelectorAll('option[data-legacy="true"]')].forEach(option => option.remove());
+  if (!current) {
+    select.value = '';
+    return;
+  }
+  const exactOption = [...select.options].find(option => option.value === current);
+  if (exactOption) {
+    select.value = current;
+    return;
+  }
+  const legacyOption = document.createElement('option');
+  legacyOption.value = current;
+  legacyOption.textContent = `${current} (rekod sedia ada)`;
+  legacyOption.dataset.legacy = 'true';
+  select.appendChild(legacyOption);
+  select.value = current;
+}
+
+
+function renderUsers() {
+  const query = normalizeName(el('wargaSearchInput') ? el('wargaSearchInput').value : '');
+  const data = sortedUsers().filter(user => !query || normalizeName(user.nama).includes(query));
+  el('wargaCount').textContent = formatNumber(users.length);
+  el('wargaTableSubtitle').textContent = `${formatNumber(data.length)} daripada ${formatNumber(users.length)} nama warga`;
+  el('wargaTableBody').innerHTML = data.map((user, index) => `
+    <tr class="${selectedWargaId === user.id ? 'selected' : ''}">
+      <td>${index + 1}</td>
+      <td><strong>${escapeHtml(user.nama)}</strong></td>
+      <td><div class="user-row-actions">
+        <button class="user-action-btn" type="button" data-user-edit="${escapeHtml(user.id)}">Edit</button>
+        <button class="user-action-btn delete" type="button" data-user-delete="${escapeHtml(user.id)}">Padam</button>
+      </div></td>
+    </tr>`).join('') || '<tr><td colspan="3"><div class="empty-state">Tiada nama warga ditemui.</div></td></tr>';
+  el('wargaTableBody').querySelectorAll('[data-user-edit]').forEach(button => button.addEventListener('click', () => selectUser(button.dataset.userEdit)));
+  el('wargaTableBody').querySelectorAll('[data-user-delete]').forEach(button => button.addEventListener('click', () => deleteUser(button.dataset.userDelete)));
+}
+function clearUserForm() {
+  selectedWargaId = null;
+  el('wargaForm').reset();
+  el('wargaId').value = '';
+  el('wargaUpdateBtn').disabled = true;
+  el('wargaDeleteBtn').disabled = true;
+  el('wargaEditBadge').classList.remove('show');
+  renderUsers();
+}
+function selectUser(id) {
+  const user = users.find(item => item.id === id);
+  if (!user) return;
+  selectedWargaId = id;
+  el('wargaId').value = id;
+  el('wargaNama').value = user.nama;
+  el('wargaUpdateBtn').disabled = false;
+  el('wargaDeleteBtn').disabled = false;
+  el('wargaEditBadge').classList.add('show');
+  renderUsers();
+  el('wargaNama').focus();
+}
+function getUserNameInput() {
+  const nama = String(el('wargaNama').value || '').trim().replace(/\s+/g, ' ');
+  if (!nama) {
+    showToast('Sila masukkan nama warga.');
+    return null;
+  }
+  const duplicate = users.find(user => normalizeName(user.nama) === normalizeName(nama) && user.id !== selectedWargaId);
+  if (duplicate) {
+    showToast('Nama tersebut telah wujud dalam database warga.');
+    return null;
+  }
+  return nama;
+}
+function addUser(event) {
+  event.preventDefault();
+  const nama = getUserNameInput();
+  if (!nama) return;
+  users.push({id:`warga-user-${Date.now()}`, nama});
+  saveUsers();
+  clearUserForm();
+  renderNameSuggestions();
+  showToast('Nama warga berjaya ditambah.');
+}
+function updateUser() {
+  if (!selectedWargaId) return;
+  const nama = getUserNameInput();
+  if (!nama) return;
+  const index = users.findIndex(user => user.id === selectedWargaId);
+  if (index < 0) return;
+  const oldName = users[index].nama;
+  users[index] = {...users[index], nama};
+  let changedTrips = 0;
+  records = records.map(record => {
+    if (normalizeName(record.nama) === normalizeName(oldName)) {
+      changedTrips += 1;
+      return {...record, nama};
+    }
+    return record;
+  });
+  saveUsers();
+  if (changedTrips) saveRecords();
+  clearUserForm();
+  renderAll();
+  renderNameSuggestions();
+  showToast(changedTrips ? `Nama warga dikemas kini pada database dan ${changedTrips} rekod perjalanan.` : 'Nama warga berjaya dikemas kini.');
+}
+function deleteUser(id = selectedWargaId) {
+  if (!id) return;
+  const user = users.find(item => item.id === id);
+  if (!user) return;
+  const linkedTrips = records.filter(record => normalizeName(record.nama) === normalizeName(user.nama)).length;
+  const note = linkedTrips ? ` Nama ini digunakan dalam ${linkedTrips} rekod perjalanan; rekod perjalanan tersebut akan dikekalkan.` : '';
+  if (!confirm(`Padam ${user.nama} daripada database warga?${note}`)) return;
+  users = users.filter(item => item.id !== id);
+  saveUsers();
+  if (selectedWargaId === id) clearUserForm(); else renderUsers();
+  renderNameSuggestions();
+  showToast('Nama warga berjaya dipadam daripada database.');
+}
+function matchingUsers(query) {
+  const normalized = normalizeName(query);
+  const data = sortedUsers();
+  if (!normalized) return data.slice(0, 12);
+  return data
+    .filter(user => normalizeName(user.nama).includes(normalized))
+    .sort((a,b) => {
+      const aStart = normalizeName(a.nama).startsWith(normalized) ? 0 : 1;
+      const bStart = normalizeName(b.nama).startsWith(normalized) ? 0 : 1;
+      return aStart - bStart || a.nama.localeCompare(b.nama, 'ms-MY', {sensitivity:'base'});
+    })
+    .slice(0, 12);
+}
+function chooseNameSuggestion(name) {
+  el('nama').value = name;
+  autocompleteIndex = -1;
+  el('namaSuggestions').hidden = true;
+}
+function renderNameSuggestions() {
+  const input = el('nama');
+  const list = el('namaSuggestions');
+  if (!input || !list) return;
+  const matches = matchingUsers(input.value);
+  autocompleteIndex = Math.min(autocompleteIndex, matches.length - 1);
+  if (!matches.length) {
+    list.innerHTML = '<div class="autocomplete-empty">Tiada nama warga yang sepadan. Tambah nama melalui menu Warga.</div>';
+    list.hidden = false;
+    return;
+  }
+  list.innerHTML = matches.map((user, index) => `<button class="autocomplete-option ${index === autocompleteIndex ? 'active' : ''}" data-name-index="${index}" type="button" role="option" aria-selected="${index === autocompleteIndex}">${escapeHtml(user.nama)}</button>`).join('');
+  list.hidden = false;
+  list.querySelectorAll('[data-name-index]').forEach((button, index) => {
+    button.addEventListener('mousedown', event => event.preventDefault());
+    button.addEventListener('click', () => chooseNameSuggestion(matches[index].nama));
+  });
+}
+function handleNameAutocompleteKeydown(event) {
+  const matches = matchingUsers(el('nama').value);
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    autocompleteIndex = matches.length ? Math.min(autocompleteIndex + 1, matches.length - 1) : -1;
+    renderNameSuggestions();
+  } else if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    autocompleteIndex = matches.length ? Math.max(autocompleteIndex - 1, 0) : -1;
+    renderNameSuggestions();
+  } else if (event.key === 'Enter' && autocompleteIndex >= 0 && matches[autocompleteIndex]) {
+    event.preventDefault();
+    chooseNameSuggestion(matches[autocompleteIndex].nama);
+  } else if (event.key === 'Escape') {
+    autocompleteIndex = -1;
+    el('namaSuggestions').hidden = true;
+  }
+}
+
+function nextProjectId() {
+  const nums = records.map(r => String(r.idKertas || '').match(/^KRT-(\d+)$/i)).filter(Boolean).map(m => Number(m[1])).filter(Number.isFinite);
+  const next = (nums.length ? Math.max(...nums) : 0) + 1;
+  return `KRT-${String(next).padStart(3,'0')}`;
+}
+function monthNameFromIso(value) {
+  if (!isValidIsoDate(value)) return '';
+  return ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'][Number(value.slice(5,7))-1] || '';
+}
+function calculateBakiHariFromToday(target) {
+  if (!isValidIsoDate(target)) return '';
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const due = new Date(`${target}T00:00:00`);
+  return Math.round((due - today) / 86400000);
+}
+function reminderFromBakiHari(baki) {
+  if (baki === '' || baki === null || typeof baki === 'undefined' || !Number.isFinite(Number(baki))) return '';
+  const n = Number(baki);
+  if (n < 0) return 'TERLEPAS TARIKH';
+  if (n <= 60) return 'PERINGATAN';
+  return 'MASIH DALAM TEMPOH';
+}
+function dynamicReminderForRecord(record) {
+  const baki = calculateBakiHariFromToday(record && record.tarikhJangkaanBentangSemula ? record.tarikhJangkaanBentangSemula : '');
+  return reminderFromBakiHari(baki);
+}
+function calculateReminderFields() {
+  const target = el('tarikhBentangInput') ? el('tarikhBentangInput').value : '';
+  const baki = calculateBakiHariFromToday(target);
+  const reminder = reminderFromBakiHari(baki);
+  if (el('bakiHariInput')) el('bakiHariInput').value = baki;
+  if (el('statusPeringatanInput')) el('statusPeringatanInput').value = reminder;
+}
+function selectRecord(id) {
+  const r = records.find(x => x.id === id); if (!r) return;
+  selectedId = id;
+  el('recordId').value = id;
+  el('idKertasInput').value = r.idKertas || r.id || '';
+  el('tarikhMesyuaratInput').value = r.tarikhMula || '';
+  el('bulanInput').value = r.bulanExcel || monthNameFromIso(r.tarikhMula) || '';
+  el('jenisMesyuaratInput').value = r.jenisMesyuarat || '';
+  el('klusterInput').value = r.kluster || '';
+  el('pembentangInput').value = r.pembentang || '';
+  el('jenisKertasInput').value = r.jenisKertas || '';
+  el('tajukKertasInput').value = r.tajukKertas || '';
+  el('statusInput').value = r.status || '';
+  el('tarikhBentangInput').value = r.tarikhJangkaanBentangSemula || '';
+  calculateReminderFields();
+  el('updateBtn').disabled = false; el('deleteBtn').disabled = false; el('editBadge').classList.add('show');
+  renderTable(); el('idKertasInput').focus();
+}
+function clearForm() {
+  selectedId = null;
+  el('travelForm').reset(); el('recordId').value='';
+  el('idKertasInput').value = nextProjectId();
+  el('updateBtn').disabled = true; el('deleteBtn').disabled = true; el('editBadge').classList.remove('show');
+  calculateReminderFields();
+  renderTable();
+}
+function getFormData() {
+  const idKertas = el('idKertasInput').value.trim();
+  const tarikhMula = el('tarikhMesyuaratInput').value;
+  const bulanExcel = el('bulanInput').value.trim();
+  const jenisMesyuarat = el('jenisMesyuaratInput').value.trim();
+  const kluster = el('klusterInput').value.trim();
+  const pembentang = el('pembentangInput').value.trim();
+  const jenisKertas = el('jenisKertasInput').value.trim();
+  const tajukKertas = el('tajukKertasInput').value.trim();
+  const status = el('statusInput').value.trim();
+  const tarikhJangkaanBentangSemula = el('tarikhBentangInput').value;
+  calculateReminderFields();
+  const bakiHariRaw = el('bakiHariInput').value;
+  const statusPeringatan = el('statusPeringatanInput').value.trim();
+  if (!idKertas || !tarikhMula || !bulanExcel || !jenisMesyuarat || !kluster || !pembentang || !jenisKertas || !tajukKertas || !status) {
+    showToast('Sila lengkapkan semua medan wajib projek.'); return null;
+  }
+  if (status === 'Bentang Semula' && !tarikhJangkaanBentangSemula) {
+    showToast('Sila masukkan Tarikh Jangkaan Bentang Semula.'); return null;
+  }
+  const duplicate = records.some(r => r.id !== selectedId && String(r.idKertas || '').toLocaleLowerCase('ms-MY') === idKertas.toLocaleLowerCase('ms-MY'));
+  if (duplicate) { showToast('ID Kertas tersebut telah wujud. Sila gunakan ID lain.'); return null; }
+  const [tahun, bulan] = tarikhMula.split('-').map(Number);
+  const bakiHari = bakiHariRaw === '' ? '' : Number(bakiHariRaw);
+  return {
+    idKertas, tarikhMula, tarikhTamat:tarikhMula, tempoh:tarikhMula, tahun, bulan, bulanExcel,
+    jenisMesyuarat, kluster, pembentang, jenisKertas, tajukKertas, status,
+    tarikhJangkaanBentangSemula: status === 'Bentang Semula' ? tarikhJangkaanBentangSemula : '',
+    bakiHari: status === 'Bentang Semula' ? bakiHari : '', statusPeringatan: status === 'Bentang Semula' ? statusPeringatan : '',
+    nama:pembentang, tempat:kluster, tujuan:jenisKertas, catatan:tajukKertas, bilHari:0, bilHariAsal:''
+  };
+}
+function addRecord(event) {
+  event.preventDefault();
+  const data = getFormData(); if (!data) return;
+  records.push({id:data.idKertas,bil:records.length+1,sumber:'Dashboard STAR',...data});
+  saveRecords(); buildYearButtons(); renderAll(); clearForm(); showToast('Rekod projek berjaya ditambah.');
+}
+function updateRecord() {
+  if (!selectedId) return;
+  const data = getFormData(); if (!data) return;
+  const idx = records.findIndex(r => r.id === selectedId); if (idx < 0) return;
+  const originalId = records[idx].id;
+  records[idx] = {...records[idx],...data,id:originalId,sumber:'Dashboard STAR'};
+  saveRecords(); buildYearButtons(); renderAll(); clearForm(); showToast('Rekod projek berjaya dikemas kini.');
+}
+function deleteRecord() {
+  if (!selectedId) return;
+  const r = records.find(x => x.id === selectedId);
+  if (!confirm(`Padam rekod projek ${r ? (r.idKertas || '') : ''}?`)) return;
+  records = records.filter(x => x.id !== selectedId); saveRecords(); buildYearButtons(); renderAll(); clearForm(); showToast('Rekod projek berjaya dipadam.');
+}
+function resetData() {
+  if (!confirm('Pulihkan semua data kepada database asal daripada Excel yang dilampirkan? Semua perubahan dalam browser ini akan dipadam.')) return;
+  records = JSON.parse(JSON.stringify(DASHBOARD_BASE_DATA)).map(normalizeRecord); saveRecords(); selectedYear=String(DEFAULT_YEAR); currentPage=1; clearForm(); buildYearButtons(); renderAll(); showToast('Versi asas dashboard telah dipulihkan.');
+}
+
+function renderStarCategoryChart(data, field, containerId, pillId) {
+  const container = el(containerId);
+  if (!container) return;
+  const counts = new Map();
+  data.forEach(r => {
+    const label = String(r[field] || 'Tidak dinyatakan').trim() || 'Tidak dinyatakan';
+    counts.set(label, (counts.get(label) || 0) + 1);
+  });
+  const items = [...counts.entries()].map(([label,count]) => ({label,count})).sort((a,b) => b.count-a.count || a.label.localeCompare(b.label,'ms-MY'));
+  const max = Math.max(1, ...items.map(x => x.count));
+  if (el(pillId)) el(pillId).textContent = `${formatNumber(items.length)} kategori`;
+  if (!items.length) { container.innerHTML = '<div class="empty-state">Tiada data untuk dipaparkan.</div>'; return; }
+  container.innerHTML = items.map((item,index) => `
+    <div class="star-bar-row" role="button" tabindex="0" data-star-bar="${index}" title="${escapeHtml(item.label)}: ${item.count}">
+      <div class="star-bar-head"><span class="star-bar-label">${escapeHtml(item.label)}</span><span class="star-bar-value">${formatNumber(item.count)}</span></div>
+      <div class="star-bar-track"><div class="star-bar-fill" style="width:${(item.count/max*100).toFixed(1)}%"></div></div>
+    </div>`).join('');
+  const rows=[...container.querySelectorAll('[data-star-bar]')];
+  rows.forEach(row => {
+    const activate=()=>{ const active=row.classList.contains('active'); rows.forEach(x=>x.classList.remove('active')); if(!active) row.classList.add('active'); };
+    row.addEventListener('click',activate);
+    row.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();} });
+  });
+}
+
+function renderPurposeChart(data) {
+  const container = el('purposeChartContainer');
+  if (!container) return;
+
+  const groups = new Map();
+  data.forEach(record => {
+    const label = String(record.jenisKertas || 'Tidak dinyatakan').trim().replace(/\s+/g, ' ') || 'Tidak dinyatakan';
+    const key = label.toLocaleLowerCase('ms-MY');
+    if (!groups.has(key)) groups.set(key, {label, count: 0});
+    groups.get(key).count += 1;
+  });
+
+  const items = [...groups.values()].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'ms-MY'));
+  const total = items.reduce((sum, item) => sum + item.count, 0);
+  el('purposeTotalPill').textContent = `${formatNumber(total)} rekod`;
+
+  if (!total) {
+    container.innerHTML = '<div class="purpose-empty"><div class="empty-state">Tiada data jenis kertas untuk tahun dipilih.</div></div>';
+    return;
+  }
+
+  const palette = ['#2563eb','#14b8a6','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#84cc16','#f97316','#ec4899','#64748b','#0ea5e9','#a855f7','#22c55e','#e11d48','#6366f1','#0891b2'];
+  const radius = 82;
+  const circumference = 2 * Math.PI * radius;
+  let cumulative = 0;
+
+  const circles = items.map((item, index) => {
+    const ratio = item.count / total;
+    const rawLength = ratio * circumference;
+    const visibleLength = Math.max(Math.min(rawLength, 1.6), rawLength - 3.2);
+    const offset = cumulative * circumference;
+    cumulative += ratio;
+    item.percent = ratio * 100;
+    item.color = palette[index % palette.length];
+    const topOffset = -(offset + (circumference / 4));
+    return `<circle class="purpose-segment" data-purpose-index="${index}" cx="120" cy="120" r="${radius}" stroke="${item.color}" stroke-dasharray="${visibleLength.toFixed(3)} ${(circumference - visibleLength).toFixed(3)}" stroke-dashoffset="${topOffset.toFixed(3)}" tabindex="0" role="img" aria-label="${escapeHtml(item.label)}: ${item.count} rekod, ${item.percent.toFixed(1)} peratus"></circle>`;
+  }).join('');
+
+  const legend = items.map((item, index) => `
+    <button class="purpose-legend-item" type="button" data-purpose-index="${index}" aria-label="${escapeHtml(item.label)}: ${item.count} rekod, ${item.percent.toFixed(1)} peratus">
+      <span class="purpose-legend-swatch" style="background:${item.color}"></span>
+      <span class="purpose-legend-name">${escapeHtml(item.label)}</span>
+      <span class="purpose-legend-value"><strong>${formatNumber(item.count)}</strong><span>${item.percent.toFixed(1)}%</span></span>
+    </button>`).join('');
+
+  container.innerHTML = `
+    <div class="purpose-chart-layout">
+      <div class="purpose-chart-shell" id="purposeChartShell">
+        <svg class="purpose-chart-svg" viewBox="0 0 240 240" aria-label="Carta pai jenis kertas">
+          <circle class="purpose-track" cx="120" cy="120" r="${radius}"></circle>
+          ${circles}
+          <circle class="purpose-center-hole" cx="120" cy="120" r="58"></circle>
+          <text class="purpose-center-value" x="120" y="118">${formatNumber(total)}</text>
+          <text class="purpose-center-label" x="120" y="144">Jumlah rekod</text>
+        </svg>
+        <div class="purpose-tooltip" id="purposeTooltip"></div>
+      </div>
+      <div class="purpose-legend">${legend}</div>
+    </div>`;
+
+  const segments = [...container.querySelectorAll('.purpose-segment')];
+  const legendItems = [...container.querySelectorAll('.purpose-legend-item')];
+  const tooltip = container.querySelector('#purposeTooltip');
+  const shell = container.querySelector('#purposeChartShell');
+
+  const setHighlight = index => {
+    segments.forEach((segment, i) => {
+      segment.classList.toggle('active', i === index);
+      segment.classList.toggle('dimmed', index !== null && i !== index);
+    });
+    legendItems.forEach((item, i) => item.classList.toggle('active', i === index));
+  };
+
+  const showTooltip = (index, clientX, clientY) => {
+    const item = items[index];
+    if (!item || !tooltip || !shell) return;
+    tooltip.innerHTML = `<strong>${escapeHtml(item.label)}</strong>${formatNumber(item.count)} rekod • ${item.percent.toFixed(1)}%`;
+    const rect = shell.getBoundingClientRect();
+    const x = Number.isFinite(clientX) ? clientX - rect.left : rect.width / 2;
+    const y = Number.isFinite(clientY) ? clientY - rect.top : rect.height / 2;
+    tooltip.style.left = `${Math.max(80, Math.min(rect.width - 80, x))}px`;
+    tooltip.style.top = `${Math.max(72, Math.min(rect.height - 24, y))}px`;
+    tooltip.classList.add('show');
+    setHighlight(index);
+  };
+
+  const hideTooltip = () => {
+    if (tooltip) tooltip.classList.remove('show');
+    setHighlight(null);
+  };
+
+  segments.forEach((segment, index) => {
+    segment.addEventListener('mouseenter', event => showTooltip(index, event.clientX, event.clientY));
+    segment.addEventListener('mousemove', event => showTooltip(index, event.clientX, event.clientY));
+    segment.addEventListener('mouseleave', hideTooltip);
+    segment.addEventListener('focus', () => showTooltip(index));
+    segment.addEventListener('blur', hideTooltip);
+  });
+  legendItems.forEach((item, index) => {
+    item.addEventListener('mouseenter', () => setHighlight(index));
+    item.addEventListener('mouseleave', hideTooltip);
+    item.addEventListener('focus', () => setHighlight(index));
+    item.addEventListener('blur', hideTooltip);
+    item.addEventListener('click', () => showTooltip(index));
+  });
+}
+
+
+function renderReminderChart(data) {
+  const container = el('reminderChartContainer');
+  const pill = el('reminderTotalPill');
+  if (!container) return;
+
+  const groups = new Map();
+  data.forEach(record => {
+    const raw = String(dynamicReminderForRecord(record) || '').trim().replace(/\s+/g, ' ');
+    const label = raw || 'Tiada Status Peringatan';
+    const key = label.toLocaleLowerCase('ms-MY');
+    if (!groups.has(key)) groups.set(key, {label, count: 0});
+    groups.get(key).count += 1;
+  });
+
+  const items = [...groups.values()].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'ms-MY'));
+  const total = items.reduce((sum, item) => sum + item.count, 0);
+  if (pill) pill.textContent = `${formatNumber(total)} rekod`;
+
+  if (!total) {
+    container.innerHTML = '<div class="purpose-empty"><div class="empty-state">Tiada data Status Peringatan untuk tahun dipilih.</div></div>';
+    return;
+  }
+
+  const palette = ['#ef4444','#f59e0b','#14b8a6','#2563eb','#8b5cf6','#64748b','#06b6d4','#84cc16'];
+  const radius = 82;
+  const circumference = 2 * Math.PI * radius;
+  let cumulative = 0;
+
+  const circles = items.map((item, index) => {
+    const ratio = item.count / total;
+    const rawLength = ratio * circumference;
+    const visibleLength = Math.max(Math.min(rawLength, 1.6), rawLength - 3.2);
+    const offset = cumulative * circumference;
+    cumulative += ratio;
+    item.percent = ratio * 100;
+    item.color = palette[index % palette.length];
+    const topOffset = -(offset + (circumference / 4));
+    return `<circle class="purpose-segment" data-reminder-index="${index}" cx="120" cy="120" r="${radius}" stroke="${item.color}" stroke-dasharray="${visibleLength.toFixed(3)} ${(circumference - visibleLength).toFixed(3)}" stroke-dashoffset="${topOffset.toFixed(3)}" tabindex="0" role="img" aria-label="${escapeHtml(item.label)}: ${item.count} rekod, ${item.percent.toFixed(1)} peratus"></circle>`;
+  }).join('');
+
+  const legend = items.map((item, index) => `
+    <button class="purpose-legend-item" type="button" data-reminder-index="${index}" aria-label="${escapeHtml(item.label)}: ${item.count} rekod, ${item.percent.toFixed(1)} peratus">
+      <span class="purpose-legend-swatch" style="background:${item.color}"></span>
+      <span class="purpose-legend-name">${escapeHtml(item.label)}</span>
+      <span class="purpose-legend-value"><strong>${formatNumber(item.count)}</strong><span>${item.percent.toFixed(1)}%</span></span>
+    </button>`).join('');
+
+  container.innerHTML = `
+    <div class="purpose-chart-layout">
+      <div class="purpose-chart-shell">
+        <svg class="purpose-chart-svg" viewBox="0 0 240 240" aria-label="Carta pai status peringatan">
+          <circle class="purpose-track" cx="120" cy="120" r="${radius}"></circle>
+          ${circles}
+          <circle class="purpose-center-hole" cx="120" cy="120" r="58"></circle>
+          <text class="purpose-center-value" x="120" y="118">${formatNumber(total)}</text>
+          <text class="purpose-center-label" x="120" y="144">Jumlah rekod</text>
+        </svg>
+        <div class="purpose-tooltip"></div>
+      </div>
+      <div class="purpose-legend">${legend}</div>
+    </div>`;
+
+  const segments = [...container.querySelectorAll('.purpose-segment')];
+  const legendItems = [...container.querySelectorAll('.purpose-legend-item')];
+  const tooltip = container.querySelector('.purpose-tooltip');
+  const shell = container.querySelector('.purpose-chart-shell');
+
+  const setHighlight = index => {
+    segments.forEach((segment, i) => {
+      segment.classList.toggle('active', i === index);
+      segment.classList.toggle('dimmed', index !== null && i !== index);
+    });
+    legendItems.forEach((item, i) => item.classList.toggle('active', i === index));
+  };
+  const showTooltip = (index, clientX, clientY) => {
+    const item = items[index];
+    if (!item || !tooltip || !shell) return;
+    tooltip.innerHTML = `<strong>${escapeHtml(item.label)}</strong>${formatNumber(item.count)} rekod • ${item.percent.toFixed(1)}%`;
+    const rect = shell.getBoundingClientRect();
+    const x = Number.isFinite(clientX) ? clientX - rect.left : rect.width / 2;
+    const y = Number.isFinite(clientY) ? clientY - rect.top : rect.height / 2;
+    tooltip.style.left = `${Math.max(80, Math.min(rect.width - 80, x))}px`;
+    tooltip.style.top = `${Math.max(72, Math.min(rect.height - 24, y))}px`;
+    tooltip.classList.add('show');
+    setHighlight(index);
+  };
+  const hideTooltip = () => {
+    if (tooltip) tooltip.classList.remove('show');
+    setHighlight(null);
+  };
+  segments.forEach((segment, index) => {
+    segment.addEventListener('mouseenter', event => showTooltip(index, event.clientX, event.clientY));
+    segment.addEventListener('mousemove', event => showTooltip(index, event.clientX, event.clientY));
+    segment.addEventListener('mouseleave', hideTooltip);
+    segment.addEventListener('focus', () => showTooltip(index));
+    segment.addEventListener('blur', hideTooltip);
+  });
+  legendItems.forEach((item, index) => {
+    item.addEventListener('mouseenter', () => setHighlight(index));
+    item.addEventListener('mouseleave', hideTooltip);
+    item.addEventListener('focus', () => setHighlight(index));
+    item.addEventListener('blur', hideTooltip);
+    item.addEventListener('click', () => showTooltip(index));
+  });
+}
+
+function renderAll() {
+  const data = filteredRecords({applySearch:false});
+  renderKPIs(data); renderChart(data); /* Excel: Jenis Mesyuarat */ renderStarCategoryChart(data,'jenisMesyuarat','meetingTypeChart','meetingTypePill'); /* Excel: Kluster */ renderStarCategoryChart(data,'kluster','clusterChart','clusterPill'); /* Excel: Pembentang */ renderStarCategoryChart(data,'pembentang','presenterChart','presenterPill'); /* Excel: Jenis Kertas */ renderPurposeChart(data); /* Excel: Status Peringatan */ renderReminderChart(data); renderOfficerSearch(); renderTable(); renderReport();
+}
+function excelXmlEscape(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+function excelColumnName(index) {
+  let name = '';
+  let n = index;
+  while (n > 0) {
+    n -= 1;
+    name = String.fromCharCode(65 + (n % 26)) + name;
+    n = Math.floor(n / 26);
+  }
+  return name;
+}
+function excelTextCell(ref, value, styleId) {
+  return `<c r="${ref}" s="${styleId}" t="inlineStr"><is><t xml:space="preserve">${excelXmlEscape(value)}</t></is></c>`;
+}
+function excelNumberCell(ref, value, styleId) {
+  const numberValue = Number.isFinite(Number(value)) ? Number(value) : 0;
+  return `<c r="${ref}" s="${styleId}"><v>${numberValue}</v></c>`;
+}
+function excelDosDateTime(date = new Date()) {
+  const year = Math.max(1980, date.getFullYear());
+  const time = (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const dosDate = ((year - 1980) << 9) | (month << 5) | day;
+  return {time, date: dosDate};
+}
+const excelCrcTable = (() => {
+  const table = new Uint32Array(256);
+  for (let i = 0; i < 256; i += 1) {
+    let c = i;
+    for (let j = 0; j < 8; j += 1) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    table[i] = c >>> 0;
+  }
+  return table;
+})();
+function excelCrc32(bytes) {
+  let crc = 0xFFFFFFFF;
+  for (let i = 0; i < bytes.length; i += 1) crc = excelCrcTable[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+function excelWriteU16(view, offset, value) { view.setUint16(offset, value, true); }
+function excelWriteU32(view, offset, value) { view.setUint32(offset, value >>> 0, true); }
+function excelConcat(parts) {
+  const total = parts.reduce((sum, part) => sum + part.length, 0);
+  const out = new Uint8Array(total);
+  let offset = 0;
+  parts.forEach(part => { out.set(part, offset); offset += part.length; });
+  return out;
+}
+function excelCreateZip(entries) {
+  const encoder = new TextEncoder();
+  const localParts = [];
+  const centralParts = [];
+  const stamp = excelDosDateTime();
+  let localOffset = 0;
+
+  entries.forEach(entry => {
+    const nameBytes = encoder.encode(entry.name);
+    const dataBytes = typeof entry.data === 'string' ? encoder.encode(entry.data) : entry.data;
+    const crc = excelCrc32(dataBytes);
+
+    const localHeader = new Uint8Array(30);
+    const localView = new DataView(localHeader.buffer);
+    excelWriteU32(localView, 0, 0x04034B50);
+    excelWriteU16(localView, 4, 20);
+    excelWriteU16(localView, 6, 0x0800);
+    excelWriteU16(localView, 8, 0);
+    excelWriteU16(localView, 10, stamp.time);
+    excelWriteU16(localView, 12, stamp.date);
+    excelWriteU32(localView, 14, crc);
+    excelWriteU32(localView, 18, dataBytes.length);
+    excelWriteU32(localView, 22, dataBytes.length);
+    excelWriteU16(localView, 26, nameBytes.length);
+    excelWriteU16(localView, 28, 0);
+    localParts.push(localHeader, nameBytes, dataBytes);
+
+    const centralHeader = new Uint8Array(46);
+    const centralView = new DataView(centralHeader.buffer);
+    excelWriteU32(centralView, 0, 0x02014B50);
+    excelWriteU16(centralView, 4, 20);
+    excelWriteU16(centralView, 6, 20);
+    excelWriteU16(centralView, 8, 0x0800);
+    excelWriteU16(centralView, 10, 0);
+    excelWriteU16(centralView, 12, stamp.time);
+    excelWriteU16(centralView, 14, stamp.date);
+    excelWriteU32(centralView, 16, crc);
+    excelWriteU32(centralView, 20, dataBytes.length);
+    excelWriteU32(centralView, 24, dataBytes.length);
+    excelWriteU16(centralView, 28, nameBytes.length);
+    excelWriteU16(centralView, 30, 0);
+    excelWriteU16(centralView, 32, 0);
+    excelWriteU16(centralView, 34, 0);
+    excelWriteU16(centralView, 36, 0);
+    excelWriteU32(centralView, 38, 0);
+    excelWriteU32(centralView, 42, localOffset);
+    centralParts.push(centralHeader, nameBytes);
+
+    localOffset += localHeader.length + nameBytes.length + dataBytes.length;
+  });
+
+  const localData = excelConcat(localParts);
+  const centralData = excelConcat(centralParts);
+  const end = new Uint8Array(22);
+  const endView = new DataView(end.buffer);
+  excelWriteU32(endView, 0, 0x06054B50);
+  excelWriteU16(endView, 4, 0);
+  excelWriteU16(endView, 6, 0);
+  excelWriteU16(endView, 8, entries.length);
+  excelWriteU16(endView, 10, entries.length);
+  excelWriteU32(endView, 12, centralData.length);
+  excelWriteU32(endView, 16, localData.length);
+  excelWriteU16(endView, 20, 0);
+  return excelConcat([localData, centralData, end]);
+}
+function excelSafeSheetName(name) {
+  return String(name || 'Laporan').replace(/[\/?*\[\]:]/g, ' ').slice(0, 31) || 'Laporan';
+}
+function exportExcel({applySearch=true}={}) {
+  const data = applySearch ? filteredRecords({applySearch:true}) : reportFilteredRecords();
+  const yearLabel = applySearch
+    ? (selectedYear === 'all' ? 'Semua Tahun' : `Tahun ${selectedYear}`)
+    : reportYearLabel();
+  const generatedLabel = new Intl.DateTimeFormat('ms-MY', {dateStyle:'long', timeStyle:'short'}).format(new Date());
+  const sheetName = excelSafeSheetName('Laporan Projek STAR');
+  const headers = [
+    'ID Kertas',
+    'Tarikh Mesyuarat',
+    'Bulan',
+    'Jenis Mesyuarat',
+    'Kluster',
+    'Pembentang',
+    'Jenis Kertas',
+    'Tajuk Kertas',
+    'Status',
+    'Tarikh Jangkaan Bentang Semula',
+    'Baki Hari',
+    'Status Peringatan'
+  ];
+  const startRow = 4;
+  const endRow = Math.max(startRow, startRow + data.length);
+
+  const rowXml = [];
+  rowXml.push(`<row r="1" ht="30" customHeight="1">${excelTextCell('A1', 'LAPORAN PROJEK STAR', 1)}</row>`);
+  rowXml.push(`<row r="2" ht="22" customHeight="1">${excelTextCell('A2', `${yearLabel} | Dijana pada ${generatedLabel}`, 2)}</row>`);
+  rowXml.push('<row r="3" ht="8" customHeight="1"></row>');
+  rowXml.push(`<row r="${startRow}" ht="30" customHeight="1">${headers.map((h, i) => excelTextCell(`${excelColumnName(i + 1)}${startRow}`, h, 3)).join('')}</row>`);
+
+  data.forEach((record, index) => {
+    const rowNumber = startRow + index + 1;
+    const bakiHari = calculateBakiHariFromToday(record.tarikhJangkaanBentangSemula || '');
+    const cells = [
+      excelTextCell(`A${rowNumber}`, record.idKertas || record.id || '', 5),
+      excelTextCell(`B${rowNumber}`, formatIsoDate(record.tarikhMula) || '', 5),
+      excelTextCell(`C${rowNumber}`, record.bulanExcel || '', 5),
+      excelTextCell(`D${rowNumber}`, record.jenisMesyuarat || '', 4),
+      excelTextCell(`E${rowNumber}`, record.kluster || '', 4),
+      excelTextCell(`F${rowNumber}`, record.pembentang || '', 4),
+      excelTextCell(`G${rowNumber}`, record.jenisKertas || '', 4),
+      excelTextCell(`H${rowNumber}`, record.tajukKertas || '', 4),
+      excelTextCell(`I${rowNumber}`, record.status || '', 5),
+      excelTextCell(`J${rowNumber}`, formatIsoDate(record.tarikhJangkaanBentangSemula) || '', 5),
+      bakiHari === '' ? excelTextCell(`K${rowNumber}`, '', 5) : excelNumberCell(`K${rowNumber}`, Number(bakiHari), 5),
+      excelTextCell(`L${rowNumber}`, dynamicReminderForRecord(record) || '', 5)
+    ].join('');
+    rowXml.push(`<row r="${rowNumber}" ht="34" customHeight="1">${cells}</row>`);
+  });
+
+  if (!data.length) {
+    rowXml.push(`<row r="5" ht="28" customHeight="1">${excelTextCell('A5', 'Tiada rekod untuk tahun dipilih.', 7)}</row>`);
+  }
+
+  const tableEndRow = data.length ? endRow : startRow;
+  const sheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <dimension ref="A1:L${Math.max(endRow, 5)}"/>
+  <sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A5" sqref="A5"/></sheetView></sheetViews>
+  <sheetFormatPr defaultRowHeight="18"/>
+  <cols>
+    <col min="1" max="1" width="14" customWidth="1"/>
+    <col min="2" max="2" width="16" customWidth="1"/>
+    <col min="3" max="3" width="13" customWidth="1"/>
+    <col min="4" max="4" width="24" customWidth="1"/>
+    <col min="5" max="5" width="20" customWidth="1"/>
+    <col min="6" max="6" width="26" customWidth="1"/>
+    <col min="7" max="7" width="23" customWidth="1"/>
+    <col min="8" max="8" width="42" customWidth="1"/>
+    <col min="9" max="9" width="18" customWidth="1"/>
+    <col min="10" max="10" width="26" customWidth="1"/>
+    <col min="11" max="11" width="12" customWidth="1"/>
+    <col min="12" max="12" width="24" customWidth="1"/>
+  </cols>
+  <sheetData>${rowXml.join('')}</sheetData>
+  <mergeCells count="${data.length ? 2 : 3}"><mergeCell ref="A1:L1"/><mergeCell ref="A2:L2"/>${data.length ? '' : '<mergeCell ref="A5:L5"/>'}</mergeCells>
+  <pageMargins left="0.25" right="0.25" top="0.5" bottom="0.5" header="0.2" footer="0.2"/>
+  <pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0" paperSize="8"/>
+  ${data.length ? '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>' : ''}
+</worksheet>`;
+
+  const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <numFmts count="0"/>
+  <fonts count="4">
+    <font><sz val="11"/><color theme="1"/><name val="Aptos"/><family val="2"/></font>
+    <font><b/><sz val="16"/><color rgb="FFFFFFFF"/><name val="Aptos Display"/><family val="2"/></font>
+    <font><i/><sz val="10"/><color rgb="FF475569"/><name val="Aptos"/><family val="2"/></font>
+    <font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Aptos"/><family val="2"/></font>
+  </fonts>
+  <fills count="5">
+    <fill><patternFill patternType="none"/></fill>
+    <fill><patternFill patternType="gray125"/></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF087F8C"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFDFF5F4"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF0B67A4"/><bgColor indexed="64"/></patternFill></fill>
+  </fills>
+  <borders count="2">
+    <border><left/><right/><top/><bottom/><diagonal/></border>
+    <border><left style="thin"><color rgb="FFD7E2EA"/></left><right style="thin"><color rgb="FFD7E2EA"/></right><top style="thin"><color rgb="FFD7E2EA"/></top><bottom style="thin"><color rgb="FFD7E2EA"/></bottom><diagonal/></border>
+  </borders>
+  <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+  <cellXfs count="8">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+    <xf numFmtId="0" fontId="1" fillId="4" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="2" fillId="3" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="3" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+  </cellXfs>
+  <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+  <dxfs count="0"/>
+  <tableStyles count="1" defaultTableStyle="TableStyleMedium2" defaultPivotStyle="PivotStyleLight16"/>
+</styleSheet>`;
+
+  const workbookXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <bookViews><workbookView xWindow="0" yWindow="0" windowWidth="24000" windowHeight="12000"/></bookViews>
+  <sheets><sheet name="${excelXmlEscape(sheetName)}" sheetId="1" r:id="rId1"/></sheets>
+  <calcPr calcId="191029"/>
+</workbook>`;
+
+  const workbookRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`;
+
+  const rootRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+</Relationships>`;
+
+  const contentTypesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+  ${data.length ? '<Override PartName="/xl/tables/table1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/>' : ''}
+  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+</Types>`;
+
+  const coreXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:title>Laporan Projek STAR</dc:title>
+  <dc:creator>Dashboard Pemantauan Projek STAR</dc:creator>
+  <cp:lastModifiedBy>Dashboard Pemantauan Projek STAR</cp:lastModifiedBy>
+  <dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created>
+  <dcterms:modified xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:modified>
+</cp:coreProperties>`;
+
+  const appXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>Microsoft Excel Compatible</Application>
+  <DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>
+  <HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs>
+  <TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>${excelXmlEscape(sheetName)}</vt:lpstr></vt:vector></TitlesOfParts>
+  <Company>Malaysia Productivity Corporation</Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion>
+</Properties>`;
+
+  const entries = [
+    {name: '[Content_Types].xml', data: contentTypesXml},
+    {name: '_rels/.rels', data: rootRelsXml},
+    {name: 'docProps/core.xml', data: coreXml},
+    {name: 'docProps/app.xml', data: appXml},
+    {name: 'xl/workbook.xml', data: workbookXml},
+    {name: 'xl/_rels/workbook.xml.rels', data: workbookRelsXml},
+    {name: 'xl/styles.xml', data: stylesXml},
+    {name: 'xl/worksheets/sheet1.xml', data: sheetXml}
+  ];
+
+  if (data.length) {
+    const tableColumns = headers.map((header, index) => `<tableColumn id="${index + 1}" name="${excelXmlEscape(header)}"/>`).join('');
+    const tableXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="ProjekSTAR" displayName="ProjekSTAR" ref="A${startRow}:L${tableEndRow}" totalsRowShown="0">
+  <autoFilter ref="A${startRow}:L${tableEndRow}"/>
+  <tableColumns count="${headers.length}">${tableColumns}</tableColumns>
+  <tableStyleInfo name="TableStyleMedium2" showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>
+</table>`;
+    const sheetRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>
+</Relationships>`;
+    entries.push({name: 'xl/tables/table1.xml', data: tableXml});
+    entries.push({name: 'xl/worksheets/_rels/sheet1.xml.rels', data: sheetRelsXml});
+  }
+
+  const zipBytes = excelCreateZip(entries);
+  const blob = new Blob([zipBytes], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const anchor = document.createElement('a');
+  anchor.href = URL.createObjectURL(blob);
+  anchor.download = `Laporan_Projek_STAR_${applySearch ? (selectedYear === 'all' ? 'Semua_Tahun' : selectedYear) : reportYearFileLabel()}.xlsx`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(anchor.href), 1500);
+  showToast('Fail Excel Projek STAR telah dijana dengan 12 kolum seperti jadual Laporan.');
+}
+
+function renderReport() {
+  if (!el('reportTableBody')) return;
+  const data = reportFilteredRecords();
+  const totalKertas = data.filter(r => String(r.idKertas || r.id || '').trim() !== '').length;
+  const selesai = data.filter(r => String(r.status || '').trim().toLocaleLowerCase('ms-MY') === 'selesai').length;
+  const bentangSemula = data.filter(r => String(r.status || '').trim().toLocaleLowerCase('ms-MY') === 'bentang semula').length;
+  const tindakan = data.filter(r => String(r.status || '').trim().toLocaleLowerCase('ms-MY') === 'tindakan').length;
+  const label = reportYearLabel();
+  const generated = new Intl.DateTimeFormat('ms-MY', {dateStyle:'long', timeStyle:'short'}).format(new Date());
+  const statusClass = value => {
+    const v = String(value || '').toLocaleLowerCase('ms-MY');
+    if (v === 'selesai') return 'selesai';
+    if (v === 'bentang semula') return 'bentang-semua';
+    if (v === 'tindakan') return 'tindakan';
+    return '';
+  };
+
+  // Gunakan kaedah pengiraan yang sama seperti KPI di menu Dashboard.
+  el('reportPeople').textContent = formatNumber(totalKertas);
+  el('reportTrips').textContent = formatNumber(selesai);
+  el('reportDays').textContent = formatNumber(bentangSemula);
+  el('reportAction').textContent = formatNumber(tindakan);
+  el('reportSubtitle').textContent = `${label} • Dikemas kini pada ${generated}`;
+  el('reportTableSubtitle').textContent = `${formatNumber(data.length)} rekod projek STAR bagi ${label.toLocaleLowerCase('ms-MY')}`;
+  el('reportTableBody').innerHTML = data.map(r => `
+    <tr>
+      <td>${escapeHtml(r.idKertas || r.id || '—')}</td>
+      <td>${escapeHtml(formatIsoDate(r.tarikhMula) || '—')}</td>
+      <td>${escapeHtml(r.bulanExcel || '—')}</td>
+      <td>${escapeHtml(r.jenisMesyuarat || '—')}</td>
+      <td>${escapeHtml(r.kluster || '—')}</td>
+      <td>${escapeHtml(r.pembentang || '—')}</td>
+      <td>${escapeHtml(r.jenisKertas || '—')}</td>
+      <td>${escapeHtml(r.tajukKertas || '—')}</td>
+      <td><span class="status-chip ${statusClass(r.status)}">${escapeHtml(r.status || '—')}</span></td>
+      <td>${escapeHtml(formatIsoDate(r.tarikhJangkaanBentangSemula) || '—')}</td>
+      <td>${calculateBakiHariFromToday(r.tarikhJangkaanBentangSemula || '') === '' ? '—' : escapeHtml(formatNumber(calculateBakiHariFromToday(r.tarikhJangkaanBentangSemula || '')))}</td>
+      <td>${escapeHtml(dynamicReminderForRecord(r) || '—')}</td>
+    </tr>`).join('') || '<tr><td colspan="12"><div class="empty-state">Tiada rekod untuk dipaparkan.</div></td></tr>';
+}
+function showView(viewName) {
+  const views = {
+    dashboard: el('dashboardView'),
+    warga: el('wargaView'),
+    perjalanan: el('perjalananView'),
+    laporan: el('laporanView')
+  };
+  const titles = {
+    dashboard: 'Dashboard Pemantauan Projek STAR',
+    warga: 'Database Warga MPC',
+    perjalanan: 'Pengurusan Projek STAR',
+    laporan: 'Laporan Projek STAR'
+  };
+  Object.entries(views).forEach(([name, view]) => {
+    if (view) view.hidden = name !== viewName;
+  });
+  document.querySelectorAll('.sidebar-link').forEach(item => {
+    item.classList.toggle('active', item.dataset.menu === viewName);
+  });
+  if (el('pageTitle')) el('pageTitle').textContent = titles[viewName] || titles.dashboard;
+  if (viewName === 'laporan') renderReport();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function generateReport() {
+  showView('laporan');
+}
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  safeStorageSet(THEME_KEY, theme);
+  el('lightTheme').classList.toggle('active', theme === 'light');
+  el('darkTheme').classList.toggle('active', theme === 'dark');
+}
+function init() {
+  setTheme(safeStorageGet(THEME_KEY) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  buildYearButtons(); renderAll(); showView('dashboard'); initProjectHorizontalScrollbar();
+  if (el('travelForm')) el('travelForm').addEventListener('submit', addRecord);
+  if (el('updateBtn')) el('updateBtn').addEventListener('click', updateRecord);
+  if (el('deleteBtn')) el('deleteBtn').addEventListener('click', deleteRecord);
+  if (el('clearBtn')) el('clearBtn').addEventListener('click', clearForm);
+  if (el('searchInput')) el('searchInput').addEventListener('input', () => {currentPage=1; renderTable();});
+  if (el('officerSearchInput')) {
+    el('officerSearchInput').addEventListener('input', renderOfficerSearch);
+    el('officerSearchInput').addEventListener('change', renderOfficerSearch);
+  }
+  if (el('tarikhMesyuaratInput')) el('tarikhMesyuaratInput').addEventListener('change', e => { const m=monthNameFromIso(e.target.value); if(m) el('bulanInput').value=m; });
+  if (el('statusInput')) el('statusInput').addEventListener('change', () => { if(el('statusInput').value!=='Bentang Semula') el('tarikhBentangInput').value=''; calculateReminderFields(); });
+  if (el('tarikhBentangInput')) el('tarikhBentangInput').addEventListener('change', calculateReminderFields);
+  if (el('pageSize')) el('pageSize').addEventListener('change', e => {pageSize=Number(e.target.value);currentPage=1;renderTable();});
+  if (el('prevPage')) el('prevPage').addEventListener('click',()=>{if(currentPage>1){currentPage--;renderTable();}});
+  if (el('nextPage')) el('nextPage').addEventListener('click',()=>{const pages=Math.ceil(filteredRecords().length/pageSize);if(currentPage<pages){currentPage++;renderTable();}});
+  if (el('yearSelect')) el('yearSelect').addEventListener('change', e => { selectedYear=e.target.value; currentPage=1; renderAll(); });
+  if (el('reportFromYearSelect')) el('reportFromYearSelect').addEventListener('change', e => { reportFromYear=e.target.value; updateReportYearRange('from'); });
+  if (el('reportToYearSelect')) el('reportToYearSelect').addEventListener('change', e => { reportToYear=e.target.value; updateReportYearRange('to'); });
+  if (el('reportExportCsvBtn')) el('reportExportCsvBtn').addEventListener('click', () => exportExcel({applySearch:false}));
+  if (el('reportPrintBtn')) el('reportPrintBtn').addEventListener('click', () => window.print());
+  if (el('menuDashboard')) el('menuDashboard').addEventListener('click', () => showView('dashboard'));
+  if (el('menuPerjalanan')) el('menuPerjalanan').addEventListener('click', () => { showView('perjalanan'); if(!selectedId && el('idKertasInput') && !el('idKertasInput').value) el('idKertasInput').value=nextProjectId(); renderTable(); requestAnimationFrame(syncProjectHorizontalScrollbar); });
+  if (el('menuLaporan')) el('menuLaporan').addEventListener('click', () => showView('laporan'));
+  if (el('lightTheme')) el('lightTheme').addEventListener('click',()=>setTheme('light'));
+  if (el('darkTheme')) el('darkTheme').addEventListener('click',()=>setTheme('dark'));
+  if (el('idKertasInput') && !el('idKertasInput').value) el('idKertasInput').value=nextProjectId();
+}
+init();
+</script>
+</body>
+</html>
